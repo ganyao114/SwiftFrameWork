@@ -10,5 +10,5 @@ public abstract class IInvokeDirect<T>{
     public void setProxy(T t){
         proxy = t;
     }
-    public abstract Object invoke(String methodname,Object... pars);
+    public abstract <V> V invoke(String methodname,Object... pars);
 }
