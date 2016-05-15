@@ -23,10 +23,9 @@ public class ObserverProxy<T> implements OnObserver<T>,IObserverProxy<T>{
     @Override
     public void onSuccess(T t) {
         String methodName = "onSuccess";
-        Class type = t.getClass();
         for (OnObserver<T> observer:observers){
             try {
-                Method method = observer.getClass().getMethod(methodName,type);
+                Method method = observer.getClass().getMethod(methodName,Object.class);
                 invoker.invoke(method,observer,t);
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();

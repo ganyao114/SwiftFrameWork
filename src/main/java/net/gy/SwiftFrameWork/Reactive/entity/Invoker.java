@@ -12,9 +12,12 @@ import net.gy.SwiftFrameWork.Reactive.annotation.RunContext;
 import net.gy.SwiftFrameWork.Service.thread.pool.impl.MySigleThreadQueue;
 import net.gy.SwiftFrameWork.Service.thread.pool.impl.MyWorkThreadQueue;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+
+import javassist.bytecode.annotation.StringMemberValue;
 
 /**
  * Created by pc on 16/5/14.
@@ -23,6 +26,8 @@ public class Invoker {
 
     private static Invoker invoker;
     private Handler mainHandler;
+
+    public final static String DynamicFlagname = "runcontext";
 
     public static Invoker getInstance(){
         synchronized (Invoker.class){
@@ -67,6 +72,53 @@ public class Invoker {
                 break;
             case NewHandlerThread:
                 invoke_new_handler_thread(method, object, values);
+                break;
+            case Dynamic:
+                invoke_dynamic(method, object, values);
+                break;
+        }
+    }
+
+    private void invoke_dynamic(Method method, Object object, Object... values) {
+        RunContextType type = null;
+        try {
+            Field field = object.getClass().getField(DynamicFlagname);
+            type = (RunContextType) field.get(object);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        if (type == null)
+            return;
+        switch (type){
+            case CurrentThread:
+                invoke_current_thread(method,object,values);
+                break;
+            case CurrentLoop:
+                invoke_current_loop(method,object,values);
+                break;
+            case NewThread:
+                invoke_new_thread(method,object,values);
+                break;
+            case MainThread:
+                invoke_main_thread(method,object,values);
+                break;
+            case MainLoop:
+                invoke_main_loop(method, object, values);
+                break;
+            case Calculate:
+                invoke_calculate(method, object, values);
+                break;
+            case IO:
+                invoke_io(method, object, values);
+                break;
+            case NewHandlerThread:
+                invoke_new_handler_thread(method, object, values);
+                break;
+            case Dynamic:
+                invoke_dynamic(method, object, values);
+                break;
         }
     }
 

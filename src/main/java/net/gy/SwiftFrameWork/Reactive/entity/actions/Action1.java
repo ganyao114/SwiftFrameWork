@@ -6,4 +6,9 @@ package net.gy.SwiftFrameWork.Reactive.entity.actions;
 public abstract class Action1<T> implements Action {
     public T t;
     public abstract void call(T t);
+
+    @Override
+    public Object invoke() {
+        return null;
+    }
 }
