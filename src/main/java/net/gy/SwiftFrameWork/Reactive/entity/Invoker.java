@@ -9,6 +9,7 @@ import net.gy.SwiftFrameWork.IOC.Service.event.proxy.IEventProxy;
 import net.gy.SwiftFrameWork.Reactive.OnObserver;
 import net.gy.SwiftFrameWork.Reactive.OnPublisher;
 import net.gy.SwiftFrameWork.Reactive.annotation.RunContext;
+import net.gy.SwiftFrameWork.Reactive.entity.actions.Func1;
 import net.gy.SwiftFrameWork.Service.thread.pool.impl.MySigleThreadQueue;
 import net.gy.SwiftFrameWork.Service.thread.pool.impl.MyWorkThreadQueue;
 
@@ -181,6 +182,9 @@ public class Invoker {
             invoke.setProxy(object);
         }else if (object instanceof OnPublisher){
             invoke = new PublisherInvoker();
+            invoke.setProxy(object);
+        }else if (object instanceof Func1){
+            invoke = new Function1Invoker();
             invoke.setProxy(object);
         }
         if (invoke == null)

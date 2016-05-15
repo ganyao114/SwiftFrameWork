@@ -1,5 +1,6 @@
 package net.gy.SwiftFrameWork.Reactive.entity;
 
+import net.gy.SwiftFrameWork.Reactive.OnObserver;
 import net.gy.SwiftFrameWork.Reactive.OnPublisher;
 import net.gy.SwiftFrameWork.Reactive.impl.ObserverProxy;
 
@@ -9,7 +10,7 @@ import net.gy.SwiftFrameWork.Reactive.impl.ObserverProxy;
 public class PublisherInvoker extends IInvokeDirect<OnPublisher>{
     @Override
     public <V> V invoke(String methodname, Object... pars) {
-        proxy.call((ObserverProxy) pars[0]);
+        proxy.call((OnObserver) pars[0]);
         return null;
     }
 }
