@@ -1,8 +1,7 @@
 package net.gy.SwiftFrameWork.Reactive.entity;
 
-import net.gy.SwiftFrameWork.Service.buffer.entity.Observer;
+import net.gy.SwiftFrameWork.Reactive.impl.Invoker;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**

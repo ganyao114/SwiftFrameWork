@@ -2,7 +2,6 @@ package net.gy.SwiftFrameWork.Reactive.impl;
 
 import net.gy.SwiftFrameWork.Reactive.IObserverProxy;
 import net.gy.SwiftFrameWork.Reactive.OnObserver;
-import net.gy.SwiftFrameWork.Reactive.entity.Invoker;
 
 import java.lang.reflect.Method;
 import java.util.Vector;
