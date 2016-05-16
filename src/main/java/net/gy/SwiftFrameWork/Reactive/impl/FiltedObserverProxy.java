@@ -6,16 +6,16 @@ import net.gy.SwiftFrameWork.Reactive.OnObserver;
 import java.util.Vector;
 
 /**
- * Created by pc on 16/5/15.
+ * Created by pc on 16/5/16.
  */
-public class MapedObserverProxy<T> implements OnObserver<T>,IObserverProxy<T> {
+public class FiltedObserverProxy<T> implements OnObserver<T>,IObserverProxy<T> {
 
     private OnObserver<T> observerproxy;
-    private MapProxy mapProxy;
+    private FilterProxy<T> filterProxy;
 
-    public MapedObserverProxy(OnObserver<T> observer,MapProxy mapProxy) {
-        this.observerproxy = observer;
-        this.mapProxy = mapProxy;
+    public FiltedObserverProxy(OnObserver<T> observerproxy, FilterProxy<T> filterProxy) {
+        this.observerproxy = observerproxy;
+        this.filterProxy = filterProxy;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class MapedObserverProxy<T> implements OnObserver<T>,IObserverProxy<T> {
 
     @Override
     public void clear() {
-        ((IObserverProxy<T>) observerproxy).clear();
+        ((IObserverProxy<T>)observerproxy).clear();
     }
 
     @Override
@@ -40,8 +40,8 @@ public class MapedObserverProxy<T> implements OnObserver<T>,IObserverProxy<T> {
 
     @Override
     public void onSuccess(T t) {
-        Object par = mapProxy.call(t);
-        observerproxy.onSuccess((T) par);
+        if (filterProxy.call(t))
+            observerproxy.onSuccess(t);
     }
 
     @Override
