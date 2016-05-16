@@ -1,5 +1,6 @@
 package net.gy.SwiftFrameWork.Reactive.utils;
 
+import net.gy.SwiftFrameWork.Reactive.annotation.Delay;
 import net.gy.SwiftFrameWork.Reactive.annotation.RunContext;
 import net.gy.SwiftFrameWork.Reactive.entity.RunContextType;
 import net.gy.SwiftFrameWork.Reactive.impl.Observer;
@@ -59,5 +60,16 @@ public class AnnotationUtils {
             e.printStackTrace();
         }
         return RunContextType.CurrentThread;
+    }
+
+    public static int getDelayAnno(Object object,String mtName,Class... partypes){
+        try {
+            Method method = object.getClass().getMethod(mtName,partypes);
+            Delay runContext = method.getAnnotation(Delay.class);
+            return runContext.value();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

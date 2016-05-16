@@ -8,6 +8,7 @@ import net.gy.SwiftFrameWork.IOC.Core.invoke.DynamicHandler;
 import net.gy.SwiftFrameWork.IOC.Service.event.proxy.IEventProxy;
 import net.gy.SwiftFrameWork.Reactive.OnObserver;
 import net.gy.SwiftFrameWork.Reactive.OnPublisher;
+import net.gy.SwiftFrameWork.Reactive.annotation.Delay;
 import net.gy.SwiftFrameWork.Reactive.annotation.RunContext;
 import net.gy.SwiftFrameWork.Reactive.entity.actions.Func1;
 import net.gy.SwiftFrameWork.Service.thread.pool.impl.MySigleThreadQueue;
@@ -29,6 +30,7 @@ public class Invoker {
     private Handler mainHandler;
 
     public final static String DynamicFlagname = "runcontext";
+    public final static String DynamicFlagDelay = "delay";
 
     public static Invoker getInstance(){
         synchronized (Invoker.class){
@@ -45,34 +47,38 @@ public class Invoker {
     public void invoke(Method method, Object object, Object... values){
         RunContext runContext = method.getAnnotation(RunContext.class);
         RunContextType type;
+        int delay = 0;
         if (runContext == null)
             type = RunContextType.CurrentThread;
         else
             type = runContext.value();
+        Delay delayAnno = method.getAnnotation(Delay.class);
+        if (delayAnno!=null)
+            delay = delayAnno.value();
         switch (type){
             case CurrentThread:
-                invoke_current_thread(method,object,values);
+                invoke_current_thread(method,object,delay,values);
                 break;
             case CurrentLoop:
-                invoke_current_loop(method,object,values);
+                invoke_current_loop(method,object,delay,values);
                 break;
             case NewThread:
-                invoke_new_thread(method,object,values);
+                invoke_new_thread(method,object,delay,values);
                 break;
             case MainThread:
-                invoke_main_thread(method,object,values);
+                invoke_main_thread(method,object,delay,values);
                 break;
             case MainLoop:
-                invoke_main_loop(method, object, values);
+                invoke_main_loop(method,object,delay,values);
                 break;
             case Calculate:
-                invoke_calculate(method, object, values);
+                invoke_calculate(method,object,delay,values);
                 break;
             case IO:
-                invoke_io(method, object, values);
+                invoke_io(method,object,delay,values);
                 break;
             case NewHandlerThread:
-                invoke_new_handler_thread(method, object, values);
+                invoke_new_handler_thread(method,object,delay,values);
                 break;
             case Dynamic:
                 invoke_dynamic(method, object, values);
@@ -82,9 +88,12 @@ public class Invoker {
 
     private void invoke_dynamic(Method method, Object object, Object... values) {
         RunContextType type = null;
+        int delay = 0;
         try {
             Field field = object.getClass().getField(DynamicFlagname);
             type = (RunContextType) field.get(object);
+            Field field1 = object.getClass().getField(DynamicFlagDelay);
+            delay = field1.getInt(object);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -94,28 +103,28 @@ public class Invoker {
             return;
         switch (type){
             case CurrentThread:
-                invoke_current_thread(method,object,values);
+                invoke_current_thread(method,object,delay,values);
                 break;
             case CurrentLoop:
-                invoke_current_loop(method,object,values);
+                invoke_current_loop(method,object,delay,values);
                 break;
             case NewThread:
-                invoke_new_thread(method,object,values);
+                invoke_new_thread(method,object,delay,values);
                 break;
             case MainThread:
-                invoke_main_thread(method,object,values);
+                invoke_main_thread(method,object,delay,values);
                 break;
             case MainLoop:
-                invoke_main_loop(method, object, values);
+                invoke_main_loop(method,object,delay,values);
                 break;
             case Calculate:
-                invoke_calculate(method, object, values);
+                invoke_calculate(method,object,delay,values);
                 break;
             case IO:
-                invoke_io(method, object, values);
+                invoke_io(method,object,delay,values);
                 break;
             case NewHandlerThread:
-                invoke_new_handler_thread(method, object, values);
+                invoke_new_handler_thread(method,object,delay,values);
                 break;
             case Dynamic:
                 invoke_dynamic(method, object, values);
@@ -123,54 +132,73 @@ public class Invoker {
         }
     }
 
-    private void invoke_new_handler_thread(Method method, Object object, Object... values) {
+    private void invoke_new_handler_thread(Method method, Object object,int delay,Object... values) {
         ProxyEntity entity = new ProxyEntity(method,object,values);
         HandlerThread thread = new HandlerThread(object.getClass().getName()+method.getName());
         thread.start();
         Handler handler = new Handler(thread.getLooper());
-        handler.post(entity);
+        if (delay == 0)
+            handler.post(entity);
+        else
+            handler.postDelayed(entity,delay);
     }
 
-    private void invoke_io(Method method, Object object, Object[] values) {
+    private void invoke_io(Method method, Object object,int delay,Object... values) {
         ProxyEntity entity = new ProxyEntity(method,object,values);
+        entity.setDelay(delay);
         MySigleThreadQueue.AddTask(entity);
     }
 
-    private void invoke_calculate(Method method, Object object, Object... values) {
+    private void invoke_calculate(Method method, Object object,int delay,Object... values) {
         ProxyEntity entity = new ProxyEntity(method,object,values);
+        entity.setDelay(delay);
         MyWorkThreadQueue.AddTask(entity);
     }
 
-    private void invoke_new_thread(Method method, Object object, Object... values) {
+    private void invoke_new_thread(Method method, Object object,int delay,Object... values) {
         ProxyEntity entity = new ProxyEntity(method,object,values);
+        entity.setDelay(delay);
         new Thread(entity).start();
     }
 
-    private void invoke_main_thread(Method method, Object object, Object... values) {
+    private void invoke_main_thread(Method method, Object object,int delay,Object... values) {
         Looper mianLoop = Looper.getMainLooper();
         ProxyEntity entity = new ProxyEntity(method,object,values);
         if (Looper.myLooper() != Looper.getMainLooper()){
-            invoke_main_loop(method, object, values);
+            invoke_main_loop(method, object,delay,values);
         }else {
-            invoke_direct(method, object, values);
+            invoke_current_thread(method, object, delay, values);
         }
     }
 
-    private void invoke_main_loop(Method method, Object object, Object... values) {
+    private void invoke_main_loop(Method method, Object object,int delay,Object... values) {
         ProxyEntity entity = new ProxyEntity(method,object,values);
-        mainHandler.post(entity);
+        if (delay == 0)
+            mainHandler.post(entity);
+        else
+            mainHandler.postDelayed(entity,delay);
     }
 
-    private void invoke_current_loop(Method method, Object object, Object... values) {
+    private void invoke_current_loop(Method method, Object object,int delay, Object... values) {
         Looper looper = Looper.myLooper();
         if (looper == null)
             throw new RuntimeException(Thread.currentThread().getName()+"不是HandlerThread");
         Handler handler = new Handler(looper);
         ProxyEntity entity = new ProxyEntity(method,object,values);
-        handler.post(entity);
+        if (delay == 0)
+            handler.post(entity);
+        else
+            handler.postDelayed(entity,delay);
     }
 
-    private <T> T invoke_current_thread(Method method, Object object, Object... values) {
+    private <T> T invoke_current_thread(Method method, Object object,int delay,Object... values) {
+        if (delay!=0) {
+            try {
+                Thread.currentThread().sleep(delay);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         return invoke_direct(method, object, values);
     }
 
