@@ -10,10 +10,13 @@ import java.util.Vector;
  */
 public abstract class Change<I,O> implements OnObserver<O>,IObserverProxy<O> {
     protected OnObserver<I> preChange;
+    protected Func1 changeImpl;
     protected IObserverProxy iObserverProxy;
     public Change(OnObserver<I> preChange) {
         this.preChange = preChange;
         iObserverProxy = (IObserverProxy<I>) preChange;
+    }
+    public Change() {
     }
 
     @Override
@@ -44,5 +47,14 @@ public abstract class Change<I,O> implements OnObserver<O>,IObserverProxy<O> {
     @Override
     public void onFinished() {
         preChange.onFinished();
+    }
+
+    public void setPreChange(OnObserver<I> preChange){
+        this.preChange = preChange;
+        iObserverProxy = (IObserverProxy<I>) preChange;
+    }
+
+    public void setChangeImpl(Func1 changeImpl) {
+        this.changeImpl = changeImpl;
     }
 }
