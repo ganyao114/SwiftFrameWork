@@ -8,12 +8,12 @@ import java.util.Vector;
 /**
  * Created by pc on 16/5/17.
  */
-public abstract class Change<I,O> implements OnObserver<O>,IObserverProxy<O> {
-    protected OnObserver<I> preChange;
+public abstract class Change<I,O> implements OnObserver<I>,IObserverProxy<O> {
+    protected OnObserver<O> preChange;
     protected Func1 changeImpl;
     protected IObserverProxy iObserverProxy;
     public Change(OnObserver<I> preChange) {
-        this.preChange = preChange;
+        this.preChange = (OnObserver<O>) preChange;
         iObserverProxy = (IObserverProxy<I>) preChange;
     }
     public Change() {
@@ -50,7 +50,7 @@ public abstract class Change<I,O> implements OnObserver<O>,IObserverProxy<O> {
     }
 
     public void setPreChange(OnObserver<I> preChange){
-        this.preChange = preChange;
+        this.preChange = (OnObserver<O>) preChange;
         iObserverProxy = (IObserverProxy<I>) preChange;
     }
 
