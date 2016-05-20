@@ -188,7 +188,7 @@ public class ListBinder {
         Method method = null;
         int[] items = null;
         try {
-            method = annoClazz.getDeclaredMethod("type");
+            method = annoClazz.getDeclaredMethod("value");
         } catch (NoSuchMethodException | SecurityException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
