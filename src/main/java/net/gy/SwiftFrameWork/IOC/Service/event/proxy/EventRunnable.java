@@ -1,5 +1,7 @@
 package net.gy.SwiftFrameWork.IOC.Service.event.proxy;
 
+import android.util.Log;
+
 /**
  * Created by gy on 2015/12/21.
  */
@@ -15,6 +17,10 @@ public class EventRunnable implements Runnable{
 
     @Override
     public void run() {
-        proxy.onEvent(arg);
+        try {
+            proxy.onEvent(arg);
+        }catch (RuntimeException e){
+            Log.e("gy",e.getMessage());
+        }
     }
 }
