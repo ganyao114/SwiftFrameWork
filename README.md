@@ -11,6 +11,8 @@ Reactive部分介绍
 IOC之ListBinder 控件数据绑定介绍
 1.基础篇:http://blog.csdn.net/ganyao939543405/article/details/51452723
 2.ORM注解以及解析:http://blog.csdn.net/ganyao939543405/article/details/51462675
+3.具体实现:http://blog.csdn.net/ganyao939543405/article/details/51564466
+
 MVP部分Presenter介绍
 
 IOC之SharePrefrenceUtils介绍
