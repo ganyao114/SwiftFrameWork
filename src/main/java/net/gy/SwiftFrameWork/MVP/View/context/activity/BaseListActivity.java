@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * Created by gy on 2016/2/26.
  */
-public abstract class BaseListActivity extends ListActivity implements IActivity,IContext {
+public abstract class BaseListActivity<P extends Presenter> extends ListActivity implements IActivity,IContext<P> {
     private SparseArray<View> mViews;
     private Map<Class,Object> listeners;
     private WeakReference<IPresenterCallBack> callbackRef;
@@ -163,7 +163,7 @@ public abstract class BaseListActivity extends ListActivity implements IActivity
     }
 
     @Override
-    public Presenter getPresent() {
-        return (Presenter) callbackRef.get();
+    public P getPresent() {
+        return (P) callbackRef.get();
     }
 }

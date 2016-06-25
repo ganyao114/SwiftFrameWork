@@ -28,9 +28,12 @@ import java.util.Map;
 /**
  * Created by gy on 2016/2/24.
  */
-public abstract class BaseAppCompactActivity extends AppCompatActivity implements IActivity,IContext{
+public abstract class BaseAppCompactActivity<P extends Presenter> extends AppCompatActivity implements IActivity,IContext<P>{
+    //通过getView管理的View集合
     private SparseArray<View> mViews;
+    //生命周期的监听集合
     private Map<Class,Object> listeners;
+    //对应的Presenter的引用
     private WeakReference<IPresenterCallBack> callbackRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,7 @@ public abstract class BaseAppCompactActivity extends AppCompatActivity implement
         listeners = new HashMap<Class,Object>();
 
         setPresent();
+        //注解框架
         ViewInjectAll.getInstance().inject(this);
 
 
@@ -163,7 +167,7 @@ public abstract class BaseAppCompactActivity extends AppCompatActivity implement
     }
 
     @Override
-    public Presenter getPresent() {
-        return (Presenter) callbackRef.get();
+    public P getPresent() {
+        return (P) callbackRef.get();
     }
 }

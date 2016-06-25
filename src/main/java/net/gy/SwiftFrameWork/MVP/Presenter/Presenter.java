@@ -23,12 +23,13 @@ import java.util.WeakHashMap;
  */
 public abstract class Presenter implements IPresenterCallBack{
 
+    //当前栈顶的Presenter 即当前栈顶Activity对应的Presenter
     private static Presenter curPresenter;
-
+    //所有的Presenter
     private static WeakHashMap<Class<? extends Presenter>,Presenter> presents = new WeakHashMap<Class<? extends Presenter>,Presenter>();;
-
+    //当前Presenter对应的Context(栈顶Activity)的弱引用
     private WeakReference<? extends Context> curContextRef;
-
+    //当前Presenter对应的所有Context
     private List<Context> contextList;
 
     public Presenter() {
@@ -37,7 +38,7 @@ public abstract class Presenter implements IPresenterCallBack{
         InjectAsycTask.getInstance().inject(this);
         HttpInjectUtil.getInstance().inject(this);
     }
-
+    //分析注解绑定Presenter
     public static Presenter regist(Context context){
         Class<?> type = context.getClass();
         InjectPresenter inject = type.getAnnotation(InjectPresenter.class);
@@ -63,7 +64,7 @@ public abstract class Presenter implements IPresenterCallBack{
         presenter.addContext(context);
         return presenter;
     }
-
+    //解绑
     public static void unregist(Context context){
         Presenter presenter = ((IContext)context).getPresent();
         presenter.removeContext(context);
@@ -105,7 +106,7 @@ public abstract class Presenter implements IPresenterCallBack{
         event.setContext(context);
         onContextChanged(event);
     }
-
+    //销毁Presenter的回调,子类可以重写
     @Override
     public void DestoryPresent() {
         HttpInjectUtil.getInstance().remove(this);
