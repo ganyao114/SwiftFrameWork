@@ -14,6 +14,7 @@ IOC之ListBinder 控件数据绑定介绍
 3.具体实现:http://blog.csdn.net/ganyao939543405/article/details/51564466
 
 MVP部分Presenter介绍
+http://blog.csdn.net/ganyao939543405/article/details/51757548
 
 IOC之SharePrefrenceUtils介绍
 
