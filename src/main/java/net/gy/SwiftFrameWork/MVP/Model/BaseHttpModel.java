@@ -14,6 +14,7 @@ import net.gy.SwiftFrameWork.Service.thread.templet.configs.HttpTheadConfigBean;
 
 import java.io.Serializable;
 import java.io.StreamCorruptedException;
+import java.lang.ref.WeakReference;
 
 /**
  * Created by gy on 2016/4/23.
@@ -34,7 +35,7 @@ public abstract class BaseHttpModel<T> implements IBaseModel<T>{
     @Override
     public void initModel() {
         httpService = new MyHttpService();
-        handler = new ModelHandler<T>();
+        handler = new ModelHandler<T>(this);
         dealCallBack = setCallBack();
         url = setUrl();
         mode = setconMode();
@@ -97,7 +98,13 @@ public abstract class BaseHttpModel<T> implements IBaseModel<T>{
         EventPoster.Broadcast(object);
     }
 
-    private class ModelHandler<T> extends Handler {
+    private static class ModelHandler<T> extends Handler {
+
+        private WeakReference<BaseHttpModel<T>> model;
+
+        public ModelHandler(BaseHttpModel<T> model) {
+            this.model = new WeakReference<BaseHttpModel<T>>(model);
+        }
 
         @Override
         public void handleMessage(Message msg) {
@@ -107,11 +114,11 @@ public abstract class BaseHttpModel<T> implements IBaseModel<T>{
                 case 0:
                     String errmsg = (String) msg.getData().getSerializable(
                             "ErroMsg");
-                    onError(errmsg);
+                    model.get().onError(errmsg);
                     break;
                 case 1:
                     T result = (T) msg.getData().getSerializable("result");
-                    onResult(result);
+                    model.get().onResult(result);
                     break;
                 default:
                     break;
