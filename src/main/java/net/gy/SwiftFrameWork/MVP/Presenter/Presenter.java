@@ -42,13 +42,8 @@ public abstract class Presenter implements IPresenterCallBack{
     public static Presenter regist(Context context){
         Class<?> type = context.getClass();
         InjectPresenter inject = type.getAnnotation(InjectPresenter.class);
-        if (inject == null) {
-            try {
-                throw new ClassNotFoundException();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
+        if (inject == null)
+            return null;
         Class<? extends Presenter> clazz = inject.value();
         Presenter presenter = getPresent(clazz);
         if (presenter == null){
