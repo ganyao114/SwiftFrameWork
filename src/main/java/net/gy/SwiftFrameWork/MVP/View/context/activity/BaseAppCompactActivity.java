@@ -53,8 +53,10 @@ public abstract class BaseAppCompactActivity<P extends Presenter> extends AppCom
     }
 
     private void setPresent(){
-
-        callbackRef = new WeakReference<IPresenterCallBack>((IPresenterCallBack) Presenter.regist(this));
+        IPresenterCallBack callBack = Presenter.regist(this);
+        if (callBack == null)
+            return;
+        callbackRef = new WeakReference<IPresenterCallBack>(callBack);
         setActivity();
     }
 
