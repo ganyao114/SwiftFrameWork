@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 import net.gy.SwiftFrameWork.R;
+import net.gy.SwiftFrameWork.Service.loader.imgloader.IImageLoader;
 import net.gy.SwiftFrameWork.Service.loader.imgloader.strategy.mystrategy.entity.ImgLoadConfigs;
 import net.gy.SwiftFrameWork.Service.loader.imgloader.strategy.mystrategy.impl.ImageLoader;
 
@@ -16,7 +17,7 @@ import com.squareup.picasso.Picasso;
  */
 public class AutoLoadImgView extends ImageView{
 
-    private ImageLoader imageLoader;
+    private IImageLoader imageLoader;
     private String url;
     private ImgLoadConfigs config;
 
@@ -27,7 +28,7 @@ public class AutoLoadImgView extends ImageView{
         int loadsrc = a.getResourceId(R.styleable.AutoLoadImgView_loadimgsrc,R.drawable.loading);
         config.setLoadImgsrc(loadsrc);
         url = a.getString(R.styleable.AutoLoadImgView_defaulturl);
-        imageLoader = new ImageLoader(context,config);
+        imageLoader = ImageLoader.getInstance(context,config);
         imageLoader.ShowImg(url,this);
         //Picasso.with(getContext()).load(url).into(this);
     }
