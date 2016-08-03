@@ -162,7 +162,7 @@ public class ViewInjectAll extends InjectBase {
 
         try {
             Method aMethod = annotationType
-                    .getDeclaredMethod("type");
+                    .getDeclaredMethod("value");
             int[] viewIds = (int[]) aMethod
                     .invoke(annotation);
             DynamicHandler handler = new DynamicHandler(object);

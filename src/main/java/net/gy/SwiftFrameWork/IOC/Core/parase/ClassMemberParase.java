@@ -7,6 +7,7 @@ import net.gy.SwiftFrameWork.IOC.Core.entity.ClassMemberPackage;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class ClassMemberParase {
             BasicValueReturn basicValueReturn = getBasicValue(field,object);
             BasicValueType basicValueType = basicValueReturn.type;
             if (basicValueType == null){
-                aPackage.setRefType((Class<?>) field.getGenericType());
+                aPackage.setRefType((Class<?>) field.getClass());
                 if (!(object instanceof Class)) {
                     try {
                         aPackage.setValue(field.get(object));

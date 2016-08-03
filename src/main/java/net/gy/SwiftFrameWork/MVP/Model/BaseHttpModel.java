@@ -146,8 +146,4 @@ public abstract class BaseHttpModel<T> implements IBaseModel<T>{
 
     }
 
-    protected abstract String setUrl();
-    protected abstract IHttpDealCallBack setCallBack();
-    protected abstract HttpConnectMode setconMode();
-    protected abstract HttpTheadConfigBean setConfig();
 }
