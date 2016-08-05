@@ -118,6 +118,10 @@ public class S {
         return ImageLoader.getInstance(context,new ImgLoadConfigs());
     }
 
+    public static Context getAppContext(){
+        return IOC.getInstance().getApplication();
+    }
+
 
 
 }
