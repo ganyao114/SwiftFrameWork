@@ -2,6 +2,8 @@ package net.gy.SwiftFrameWork.Service.thread.templet.configs;
 
 public class HttpTheadConfigBean {
 
+    private static HttpTheadConfigBean defaultBean;
+
     public boolean isLoop;
     public int tickTime;
     public String ErrorMsgLevel1;
@@ -17,6 +19,14 @@ public class HttpTheadConfigBean {
         this.ErrorMsgLevel1 = ErrorMsgLevel1;
         this.ErrorMsgLevel2 = ErrorMsgLevel2;
         this.ErrorMsgLevel3 = ErrorMsgLevel3;
+    }
+
+    public static HttpTheadConfigBean Default(){
+        synchronized (HttpTheadConfigBean.class){
+            if (defaultBean == null)
+                defaultBean = new HttpTheadConfigBean(false,0,"","","");
+        }
+        return defaultBean;
     }
 
 }
