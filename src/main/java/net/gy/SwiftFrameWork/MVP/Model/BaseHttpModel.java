@@ -15,6 +15,7 @@ import net.gy.SwiftFrameWork.Service.thread.templet.configs.HttpTheadConfigBean;
 import java.io.Serializable;
 import java.io.StreamCorruptedException;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 
 /**
  * Created by gy on 2016/4/23.
@@ -139,11 +140,15 @@ public abstract class BaseHttpModel<T> implements IBaseModel<T>{
     }
 
     public void addParam(String key,String value){
-
+        if (httpService.getParams() == null)
+            httpService.setParams(new HashMap<String, String>());
+        httpService.getParams().put(key,value);
     }
 
     public void addHeader(String key,String value){
-
+        if (httpService.getHeaders() == null)
+            httpService.setHeaders(new HashMap<String, String>());
+        httpService.getHeaders().put(key,value);
     }
 
 }
