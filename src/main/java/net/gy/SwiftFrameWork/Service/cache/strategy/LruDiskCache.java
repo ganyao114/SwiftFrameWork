@@ -13,6 +13,11 @@ public class LruDiskCache implements IDiskCache {
     }
 
     @Override
+    public void remove(Object o) {
+
+    }
+
+    @Override
     public Object get(Object key) {
         return null;
     }

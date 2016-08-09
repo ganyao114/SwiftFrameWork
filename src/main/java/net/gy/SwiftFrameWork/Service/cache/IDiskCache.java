@@ -6,6 +6,8 @@ package net.gy.SwiftFrameWork.Service.cache;
 public interface IDiskCache<K, V> {
     public boolean put(K key, V value);
 
+    public void remove(K k);
+
     public V get(K key);
 
     public void clear();

@@ -16,6 +16,11 @@ public class DiskCacheControl implements IDiskCache {
     }
 
     @Override
+    public void remove(Object o) {
+
+    }
+
+    @Override
     public Object get(Object key) {
         cacheStrategy.get(key);
         return null;

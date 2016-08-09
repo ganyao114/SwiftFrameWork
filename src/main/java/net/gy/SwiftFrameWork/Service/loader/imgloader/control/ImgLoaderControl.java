@@ -23,6 +23,11 @@ public class ImgLoaderControl implements IImageLoader{
 
     }
 
+    @Override
+    public void removeCache(String url) {
+
+    }
+
     public void setLoader(IImageLoader imageLoader){
         this.imageLoader = imageLoader;
     }

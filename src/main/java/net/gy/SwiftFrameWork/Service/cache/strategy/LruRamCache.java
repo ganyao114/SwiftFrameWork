@@ -17,6 +17,11 @@ public class LruRamCache<K, V> implements IRamCache<K, V> {
     }
 
     @Override
+    public void remove(K k) {
+
+    }
+
+    @Override
     public void clear() {
 
     }

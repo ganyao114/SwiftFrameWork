@@ -211,6 +211,12 @@ public class ImageLoader implements IImageLoader, ImgLoadThreadCallBack {
         context = null;
     }
 
+    @Override
+    public void removeCache(String url) {
+        memoryCache.remove(url);
+        fileCache.remove(url);
+    }
+
 
     @Override
     public ImageLoader getInstance() {

@@ -64,6 +64,12 @@ public class MemoryCache {
         cache.clear();
     }
 
+    public void remove(String key){
+        if (cache.containsKey(key)) {
+            size -= getSizeInBytes(cache.remove(key));
+        }
+    }
+
     long getSizeInBytes(Bitmap bitmap) {
         if (bitmap == null)
             return 0;

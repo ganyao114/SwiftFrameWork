@@ -34,6 +34,14 @@ public class FileCache {
         return file;
     }
 
+    public void remove(String url){
+        String FileName = String.valueOf(url.hashCode());
+        //String filename = URLEncoder.encode(url);
+        File file = new File(cacheDir, FileName);
+        file.exists();
+        file.delete();
+    }
+
     public void clear() {
         File[] files = cacheDir.listFiles();
         if (files == null)

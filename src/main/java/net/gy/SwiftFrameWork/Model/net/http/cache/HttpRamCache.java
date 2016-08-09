@@ -18,6 +18,11 @@ public class HttpRamCache implements IRamCache<HttpToken,String> {
     }
 
     @Override
+    public void remove(HttpToken httpToken) {
+
+    }
+
+    @Override
     public void clear() {
 
     }

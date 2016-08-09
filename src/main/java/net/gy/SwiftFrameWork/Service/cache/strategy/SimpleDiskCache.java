@@ -44,6 +44,11 @@ public class SimpleDiskCache<K, V> implements IDiskCache<K, V> {
     }
 
     @Override
+    public void remove(K k) {
+
+    }
+
+    @Override
     public V get(K key) {
         return null;
     }

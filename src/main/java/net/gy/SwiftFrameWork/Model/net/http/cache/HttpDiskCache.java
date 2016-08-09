@@ -13,6 +13,11 @@ public class HttpDiskCache implements IDiskCache<HttpToken,String> {
     }
 
     @Override
+    public void remove(HttpToken httpToken) {
+
+    }
+
+    @Override
     public String get(HttpToken key) {
         return null;
     }
