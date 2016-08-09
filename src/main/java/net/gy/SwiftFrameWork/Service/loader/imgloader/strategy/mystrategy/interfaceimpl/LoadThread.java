@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.Future;
 
 
 /**
@@ -32,8 +33,8 @@ public class LoadThread implements IThreadInterface {
     }
 
     @Override
-    public void AddTask(Runnable runnable) {
-        MyWorkThreadQueue.AddTask(runnable);
+    public Future AddTask(Runnable runnable) {
+        return MyWorkThreadQueue.AddTask(runnable);
     }
 
     @Override

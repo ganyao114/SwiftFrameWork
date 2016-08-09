@@ -25,7 +25,9 @@ import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Vector;
 import java.util.WeakHashMap;
+import java.util.concurrent.Future;
 
 public class ImageLoader implements IImageLoader, ImgLoadThreadCallBack {
 
@@ -38,6 +40,7 @@ public class ImageLoader implements IImageLoader, ImgLoadThreadCallBack {
     private Handler handler;
     private ImgLoadConfigs configs;
     private IThreadInterface thread = LoadThread.getInterface();
+    private Vector<Future> rlist;
 
     public ImageLoader(Context context, ImgLoadConfigs configs) {
         // TODO Auto-generated constructor stub
@@ -45,6 +48,7 @@ public class ImageLoader implements IImageLoader, ImgLoadThreadCallBack {
         this.configs = configs;
         handler = new MyHandler(this);
         fileCache = new FileCache(context);
+        rlist = new Vector<Future>();
     }
 
     public ImageLoader(Context context, int imgSize) {
@@ -52,6 +56,7 @@ public class ImageLoader implements IImageLoader, ImgLoadThreadCallBack {
         this.context = context;
         handler = new MyHandler(this);
         fileCache = new FileCache(context);
+        rlist = new Vector<Future>();
     }
 
     public static IImageLoader getInstance(Context context,ImgLoadConfigs configs){
@@ -62,6 +67,11 @@ public class ImageLoader implements IImageLoader, ImgLoadThreadCallBack {
         IImageLoader imageLoader = new ImageLoader(context,configs);
         imgloads.put(context,new WeakReference<IImageLoader>(imageLoader));
         return imageLoader;
+    }
+
+    public static IImageLoader With(Context context){
+        ImgLoadConfigs configs = new ImgLoadConfigs();
+        return getInstance(context,configs);
     }
 
 
@@ -79,7 +89,8 @@ public class ImageLoader implements IImageLoader, ImgLoadThreadCallBack {
 
     private void queuePhoto(String url, ImageView imageView) {
         PhotoToLoad photoToLoad = new PhotoToLoad(url, imageView);
-        thread.AddTask(thread.getLoadRunnable(handler, photoToLoad, this));
+        Future future = thread.AddTask(thread.getLoadRunnable(handler, photoToLoad, this));
+        rlist.add(future);
     }
 
 
@@ -187,6 +198,16 @@ public class ImageLoader implements IImageLoader, ImgLoadThreadCallBack {
     public void clearCache() {
         memoryCache.clear();
         fileCache.clear();
+    }
+
+    public void destory(){
+        for (Future future:rlist){
+            if (future!=null)
+                future.cancel(true);
+        }
+        rlist.clear();
+        imgloads.remove(context);
+        context = null;
     }
 
 
