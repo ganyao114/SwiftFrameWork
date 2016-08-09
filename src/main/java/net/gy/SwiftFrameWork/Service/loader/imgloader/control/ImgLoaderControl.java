@@ -18,6 +18,11 @@ public class ImgLoaderControl implements IImageLoader{
         imageLoader.ShowImg(src,view);
     }
 
+    @Override
+    public void destory() {
+
+    }
+
     public void setLoader(IImageLoader imageLoader){
         this.imageLoader = imageLoader;
     }
