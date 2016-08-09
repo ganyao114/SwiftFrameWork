@@ -7,4 +7,5 @@ import android.widget.ImageView;
  */
 public interface IImageLoader {
     public void ShowImg(String src, ImageView view);
+    public void destory();
 }

@@ -200,6 +200,7 @@ public class ImageLoader implements IImageLoader, ImgLoadThreadCallBack {
         fileCache.clear();
     }
 
+    @Override
     public void destory(){
         for (Future future:rlist){
             if (future!=null)
