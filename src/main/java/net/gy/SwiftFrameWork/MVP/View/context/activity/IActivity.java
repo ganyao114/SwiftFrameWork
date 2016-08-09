@@ -1,6 +1,7 @@
 package net.gy.SwiftFrameWork.MVP.View.context.activity;
 
 import android.graphics.Bitmap;
+import android.support.annotation.IdRes;
 import android.view.View;
 
 import net.gy.SwiftFrameWork.MVP.View.context.entity.ActivityOnCreatedListener;
@@ -15,7 +16,7 @@ import net.gy.SwiftFrameWork.MVP.View.context.entity.ActivityOnStopListener;
  * Created by gy on 2016/2/24.
  */
 public interface IActivity {
-    public  <T extends View> T getView(int ViewId);
+    public  <T extends View> T getView(@IdRes int ViewId);
 
     public void setText(int id,String str);
 

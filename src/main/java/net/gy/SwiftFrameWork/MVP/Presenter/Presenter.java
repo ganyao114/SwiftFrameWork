@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.IdRes;
 import android.view.View;
 
 import net.gy.SwiftFrameWork.IOC.Model.net.http.impl.HttpInjectUtil;
@@ -127,7 +128,7 @@ public abstract class Presenter implements IPresenterCallBack{
         return (Service) getContext();
     }
 
-    protected  <T extends View> T getView(int ViewId){
+    protected  <T extends View> T getView(@IdRes int ViewId){
         return getActivityInter().getView(ViewId);
     }
 

@@ -11,6 +11,7 @@ import net.gy.SwiftFrameWork.Model.net.http.entity.UploadProgress;
 import net.gy.SwiftFrameWork.Model.net.http.factory.HttpClientFactory;
 import net.gy.SwiftFrameWork.Service.loader.imgloader.strategy.test.ImageLoader;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -18,6 +19,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
@@ -27,6 +29,7 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -51,6 +54,7 @@ public class MyHttpService implements IHttpService {
     private long totalSize;
     private String Cookies;
     private File uploadFIle;
+    private HttpEntity entity;
 
     public MyHttpService() {
     }
@@ -107,6 +111,14 @@ public class MyHttpService implements IHttpService {
         this.uploadFIle = uploadFIle;
     }
 
+    public HttpEntity getEntity() {
+        return entity;
+    }
+
+    public void setEntity(HttpEntity entity) {
+        this.entity = entity;
+    }
+
     @Override
     public Serializable getDataPost() throws Exception {
 
@@ -117,7 +129,10 @@ public class MyHttpService implements IHttpService {
 
 
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-        if (params != null) {
+
+        if (entity != null){
+            post.setEntity(entity);
+        }else if (params != null) {
             for (Map.Entry<String, String> entity : params.entrySet())
                 parameters.add(new BasicNameValuePair(entity.getKey(), entity.getValue()));
         }
@@ -146,6 +161,8 @@ public class MyHttpService implements IHttpService {
     }
 
     public Bitmap getBitmap(String url,File f) throws Exception{
+        InputStream is = null;
+        OutputStream os = null;
         try {
             Bitmap bitmap = null;
             URL imageUrl = new URL(url);
@@ -158,17 +175,25 @@ public class MyHttpService implements IHttpService {
             if (responseCode != HttpURLConnection.HTTP_OK) {
                 throw new HttpServiceException("连接服务器出错");
             }
-            InputStream is = conn.getInputStream();
-            OutputStream os = new FileOutputStream(f);
-
-            ImageLoader.CopyStream(is, os);
-            os.close();
-            bitmap = ImageLoader.decodeFile(f);
+            is = conn.getInputStream();
+            if (f!=null) {
+                os = new FileOutputStream(f);
+                ImageLoader.CopyStream(is, os);
+                os.close();
+                bitmap = ImageLoader.decodeFile(f);
+            }else {
+                bitmap = ImageLoader.decodeFile(is);
+            }
             return bitmap;
         } catch (Exception ex) {
             ex.printStackTrace();
-            return null;
+        }finally {
+            if (is!=null)
+                is.close();
+            if (os!=null)
+                os.close();
         }
+        return null;
     }
 
     @Override

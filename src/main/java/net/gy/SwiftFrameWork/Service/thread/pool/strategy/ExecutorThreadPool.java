@@ -5,7 +5,10 @@ import net.gy.SwiftFrameWork.Service.thread.pool.configs.ThreadPoolConfigs;
 import net.gy.SwiftFrameWork.Service.thread.pool.factory.WorkThreadFactory;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -13,13 +16,24 @@ import java.util.concurrent.TimeUnit;
 
 public class ExecutorThreadPool implements IThreadPool {
 
-    private Executor mExecutor;
+    private ExecutorService mExecutor;
     private ThreadPoolConfigs configs;
 
 
-    public void submit(Runnable command) {
-        mExecutor.execute(command);
+    public Future submit(Runnable command) {
+        return mExecutor.submit(command);
     }
+
+    @Override
+    public Future submit(Callable r) {
+        return mExecutor.submit(r);
+    }
+
+    @Override
+    public <T> Future submit(Runnable task, T result) {
+        return mExecutor.submit(task,result);
+    }
+
 
     @Override
     public void poolstart() {

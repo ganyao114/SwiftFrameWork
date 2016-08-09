@@ -3,6 +3,9 @@ package net.gy.SwiftFrameWork.Service.thread.pool.control;
 import net.gy.SwiftFrameWork.Service.thread.pool.IThreadPool;
 import net.gy.SwiftFrameWork.Service.thread.pool.configs.ThreadPoolConfigs;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+
 /**
  * Created by gy on 2015/11/6.
  */
@@ -22,8 +25,18 @@ public class ThreadPoolControl implements IThreadPool {
     }
 
     @Override
-    public synchronized void submit(Runnable r) {
-        poolstrategy.submit(r);
+    public synchronized Future submit(Runnable r) {
+        return poolstrategy.submit(r);
+    }
+
+    @Override
+    public Future submit(Callable r) {
+        return poolstrategy.submit(r);
+    }
+
+    @Override
+    public <T> Future submit(Runnable task, T result) {
+        return poolstrategy.submit(task, result);
     }
 
     @Override

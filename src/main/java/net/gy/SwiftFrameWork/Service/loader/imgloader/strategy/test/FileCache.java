@@ -17,7 +17,7 @@ public class FileCache {
 	private boolean establishCache(Context context)
 	{
 		if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-			cacheDir = new File(Environment.getExternalStorageDirectory(),"booklist");
+			cacheDir = new File(Environment.getExternalStorageDirectory(),"shuashua");
 		}else {
 			cacheDir = context.getCacheDir();
 		}
