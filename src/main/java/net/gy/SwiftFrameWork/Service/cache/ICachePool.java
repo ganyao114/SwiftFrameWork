@@ -13,4 +13,6 @@ public interface ICachePool <K,V>{
     public V findByRoute(String route);
     public V delById(K key);
     public V delByRoute(String route);
+    public V refreshByKey(K key);
+    public V refreshByRoute(String route);
 }

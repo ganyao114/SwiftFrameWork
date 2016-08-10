@@ -16,6 +16,8 @@ import java.io.Serializable;
 import java.io.StreamCorruptedException;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.Vector;
+import java.util.concurrent.Future;
 
 /**
  * Created by gy on 2016/4/23.
@@ -28,6 +30,7 @@ public abstract class BaseHttpModel<T> implements IBaseModel<T>{
     protected ModelHandler<T> handler;
     protected HttpConnectMode mode;
     protected String url;
+    protected Vector<Future> taskList;
 
     public BaseHttpModel() {
         initModel();
@@ -81,12 +84,17 @@ public abstract class BaseHttpModel<T> implements IBaseModel<T>{
     }
 
     public void doHttp(){
-        MyWorkThreadQueue.AddTask(thread);
+        if (taskList == null)
+            taskList = new Vector<Future>();
+        taskList.add(MyWorkThreadQueue.AddTask(thread));
     }
 
     @Override
     public void destoryModel() {
-
+        for (Future future:taskList){
+            if (future!=null&&!future.isDone())
+                future.cancel(true);
+        }
     }
 
     @Override

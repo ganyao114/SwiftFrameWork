@@ -10,7 +10,6 @@ import java.util.Map;
 public class CachePool<K,V> implements ICachePool<K,V>{
 
     private CachePoolGroup parent;
-    private Map<K,V> cache;
 
     @Override
     public void init() {
@@ -54,6 +53,16 @@ public class CachePool<K,V> implements ICachePool<K,V>{
 
     @Override
     public V delByRoute(String route) {
+        return null;
+    }
+
+    @Override
+    public V refreshByKey(K key) {
+        return null;
+    }
+
+    @Override
+    public V refreshByRoute(String route) {
         return null;
     }
 }
