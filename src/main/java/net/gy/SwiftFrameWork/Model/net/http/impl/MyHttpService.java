@@ -1,6 +1,7 @@
 package net.gy.SwiftFrameWork.Model.net.http.impl;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import net.gy.SwiftFrameWork.Exception.model.net.http.HttpServiceException;
 import net.gy.SwiftFrameWork.Model.net.http.IHttpDealCallBack;
@@ -162,7 +163,6 @@ public class MyHttpService implements IHttpService {
 
     public Bitmap getBitmap(String url,File f) throws Exception{
         InputStream is = null;
-        OutputStream os = null;
         try {
             Bitmap bitmap = null;
             URL imageUrl = new URL(url);
@@ -176,22 +176,13 @@ public class MyHttpService implements IHttpService {
                 throw new HttpServiceException("连接服务器出错");
             }
             is = conn.getInputStream();
-            if (f!=null) {
-                os = new FileOutputStream(f);
-                ImageLoader.CopyStream(is, os);
-                os.close();
-                bitmap = ImageLoader.decodeFile(f);
-            }else {
-                bitmap = ImageLoader.decodeFile(is);
-            }
+            bitmap = BitmapFactory.decodeStream(is);
             return bitmap;
         } catch (Exception ex) {
             ex.printStackTrace();
         }finally {
             if (is!=null)
                 is.close();
-            if (os!=null)
-                os.close();
         }
         return null;
     }
