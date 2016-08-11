@@ -10,7 +10,6 @@ import net.gy.SwiftFrameWork.Model.net.http.IUploadCallBack;
 import net.gy.SwiftFrameWork.Model.net.http.entity.CustomMultipartEntity;
 import net.gy.SwiftFrameWork.Model.net.http.entity.UploadProgress;
 import net.gy.SwiftFrameWork.Model.net.http.factory.HttpClientFactory;
-import net.gy.SwiftFrameWork.Service.loader.imgloader.strategy.test.ImageLoader;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
