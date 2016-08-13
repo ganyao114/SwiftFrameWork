@@ -1,6 +1,7 @@
 package net.gy.SwiftFrameWork.Service.cache.control;
 
 import net.gy.SwiftFrameWork.Service.cache.ICachePool;
+import net.gy.SwiftFrameWork.Service.cache.entity.ICache;
 
 import java.util.Map;
 
@@ -9,7 +10,28 @@ import java.util.Map;
  */
 public class CachePool<K,V> implements ICachePool<K,V>{
 
+    public volatile static ICachePool poolRoot;
+
     private CachePoolGroup parent;
+
+    private ICache<K,V> cache;
+
+    private boolean compressable = false;
+
+    public static ICachePool buildPool(){
+        if (poolRoot == null){
+            synchronized (CachePool.class){
+                if (poolRoot == null){
+                    establish();
+                }
+            }
+        }
+        return poolRoot;
+    }
+
+    private static void establish() {
+
+    }
 
     @Override
     public void init() {
@@ -64,5 +86,10 @@ public class CachePool<K,V> implements ICachePool<K,V>{
     @Override
     public V refreshByRoute(String route) {
         return null;
+    }
+
+    @Override
+    public boolean compressable() {
+        return compressable;
     }
 }

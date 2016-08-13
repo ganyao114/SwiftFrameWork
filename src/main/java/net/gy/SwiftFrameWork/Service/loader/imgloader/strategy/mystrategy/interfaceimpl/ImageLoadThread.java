@@ -38,7 +38,7 @@ public class ImageLoadThread extends HttpThreadTemplet {
         File file = imgReusedCallBack.getInstance().
                 fileCache.getFile(photoToLoad.url);
         Bitmap bitmap = ImageLoader
-                .decodeFile(file);
+                .decodeFileAuto(photoToLoad.imageView,file);
         if (bitmap != null) {
             imgReusedCallBack.threadCall(photoToLoad, bitmap);
         } else {

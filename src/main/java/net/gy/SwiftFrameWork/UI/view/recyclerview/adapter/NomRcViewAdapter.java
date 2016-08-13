@@ -15,7 +15,7 @@ public class NomRcViewAdapter<T> extends CommonAdapter {
 
     private IRcAdapterCallBack callBack;
 
-    public NomRcViewAdapter(Context context, int layoutId, List datas,IRcAdapterCallBack callBack) {
+    public NomRcViewAdapter(Context context, int layoutId, List datas, IRcAdapterCallBack callBack) {
         super(context, layoutId, datas);
         this.callBack = callBack;
     }

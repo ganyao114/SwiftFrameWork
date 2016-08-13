@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -23,11 +25,13 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Vector;
 import java.util.WeakHashMap;
 import java.util.concurrent.Future;
+import android.util.DisplayMetrics;
 
 public class ImageLoader implements IImageLoader, ImgLoadThreadCallBack {
 
@@ -101,6 +105,10 @@ public class ImageLoader implements IImageLoader, ImgLoadThreadCallBack {
         return false;
     }
 
+    public static Bitmap decodeFileAuto(ImageView imageView,File file){
+        return decodeSampledBitmapFromPath(null,getImageViewSize(imageView),file);
+    }
+
     public static Bitmap decodeFile(File f) {
         try {
             // decode image size
@@ -128,6 +136,97 @@ public class ImageLoader implements IImageLoader, ImgLoadThreadCallBack {
         } catch (FileNotFoundException e) {
         }
         return null;
+    }
+
+    public static ImageSize getImageViewSize(ImageView imageView) {
+        DisplayMetrics displayMetrics = imageView.getContext().getResources()
+                .getDisplayMetrics();
+
+        ViewGroup.LayoutParams params = imageView.getLayoutParams();
+
+        int width = imageView.getWidth();
+        if (width <= 0) {
+            width = params.width;
+        }
+        if (width <= 0) {
+            width = getImaeViewFieldValue(imageView, "mMaxWidth");
+        }
+        if (width <= 0) {
+            width = displayMetrics.widthPixels;
+        }
+
+        int height = imageView.getHeight();
+        if (height <= 0) {
+            height = params.height;
+        }
+        if (height <= 0) {
+            height = getImaeViewFieldValue(imageView, "mMaxHeight");
+        }
+        if (height <= 0) {
+            height = displayMetrics.heightPixels;
+        }
+
+        ImageSize imageSize = new ImageSize();
+        imageSize.width = width;
+        imageSize.height = height;
+        return imageSize;
+    }
+
+    public static int getImaeViewFieldValue(ImageView imageView, String fieldName) {
+        int value = 0;
+        try {
+            Field field = ImageView.class.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            int fieldValue = field.getInt(imageView);
+            if (fieldValue > 0 && fieldValue < Integer.MAX_VALUE) {
+                value = fieldValue;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return value;
+    }
+
+    public static Bitmap decodeSampledBitmapFromPath(String path,
+                                                 ImageSize imageSize,File file) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, options);
+
+        options.inSampleSize = caculateInSampleSize(options, imageSize);
+
+        options.inJustDecodeBounds = false;
+        Bitmap bitmap = null;
+        if (file == null)
+            bitmap = BitmapFactory.decodeFile(path, options);
+        else
+            bitmap = BitmapFactory.decodeFile(file.getPath(),options);
+
+        return bitmap;
+    }
+
+    /**
+     *
+     *
+     * @param options
+     * @param imageSize
+     * @return
+     */
+    private static int caculateInSampleSize(BitmapFactory.Options options, ImageSize imageSize) {
+        int width = options.outWidth;
+        int height = options.outHeight;
+
+        int inSampleSize = 1;// ѹ��ȡ����
+
+        if (width > imageSize.width || height > imageSize.height) {
+            int widthRadio = Math.round(width * 1.0f / imageSize.width);
+            int heightRadio = Math.round(height * 1.0f / imageSize.height);
+
+            inSampleSize = Math.max(widthRadio, heightRadio);
+        }
+
+        return inSampleSize;
     }
 
 
@@ -236,6 +335,11 @@ public class ImageLoader implements IImageLoader, ImgLoadThreadCallBack {
             }
         } catch (Exception ex) {
         }
+    }
+
+    public static class ImageSize {
+        protected int width;
+        protected int height;
     }
 
 

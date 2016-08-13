@@ -15,4 +15,5 @@ public interface ICachePool <K,V>{
     public V delByRoute(String route);
     public V refreshByKey(K key);
     public V refreshByRoute(String route);
+    public boolean compressable();
 }
