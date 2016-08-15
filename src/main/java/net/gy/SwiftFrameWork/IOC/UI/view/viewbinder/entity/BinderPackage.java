@@ -3,6 +3,8 @@ package net.gy.SwiftFrameWork.IOC.UI.view.viewbinder.entity;
 import android.util.SparseArray;
 import android.view.View;
 
+import net.gy.SwiftFrameWork.IOC.UI.view.viewbinder.impl.ListBinder;
+import net.gy.SwiftFrameWork.R;
 import net.gy.SwiftFrameWork.UI.view.baserecycleview.ViewHolder;
 import net.gy.SwiftFrameWork.UI.view.collectionview.viewholder.IViewHolder;
 
@@ -50,6 +52,7 @@ public class BinderPackage {
             if (ltnmethod != null) {
                 ltnmethod.invoke(view, ltnImpl);
                 view.setTag(position);
+                view.setTag(R.id.EntityTag,list.get(position));
             }
         } catch (IllegalAccessException e) {
             e.printStackTrace();
@@ -80,6 +83,7 @@ public class BinderPackage {
             if (ltnmethod != null) {
                 ltnmethod.invoke(view, ltnImpl);
                 view.setTag(position);
+                view.setTag(R.id.EntityTag,list.get(position));
             }
         } catch (IllegalAccessException e) {
             e.printStackTrace();

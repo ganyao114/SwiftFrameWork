@@ -10,6 +10,7 @@ import net.gy.SwiftFrameWork.IOC.UI.view.viewbinder.annotation.ListBinderBase;
 import net.gy.SwiftFrameWork.IOC.UI.view.viewbinder.annotation.ListBinderLtnBase;
 import net.gy.SwiftFrameWork.IOC.UI.view.viewbinder.annotation.ListDataSrc;
 import net.gy.SwiftFrameWork.IOC.UI.view.viewbinder.entity.BinderPackage;
+import net.gy.SwiftFrameWork.R;
 import net.gy.SwiftFrameWork.UI.view.baserecycleview.ViewHolder;
 import net.gy.SwiftFrameWork.UI.view.collectionview.IAdapterCallBack;
 import net.gy.SwiftFrameWork.UI.view.collectionview.adapter.NomListAdapter;
@@ -29,6 +30,7 @@ import java.util.List;
 public class ListBinder {
 
     private static ListBinder utils;
+
 
     public static ListBinder getInstance(){
         synchronized (ListBinder.class){
