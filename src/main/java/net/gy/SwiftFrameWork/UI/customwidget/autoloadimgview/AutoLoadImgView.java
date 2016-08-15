@@ -46,5 +46,18 @@ public class AutoLoadImgView extends ImageView{
         //Picasso.with(getContext()).load(url).into(this);
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+
+    {
+
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+
+        int height = width * getDrawable().getIntrinsicHeight() / getDrawable().getIntrinsicWidth();
+
+        setMeasuredDimension(width, height);
+
+    }
+
 
 }
