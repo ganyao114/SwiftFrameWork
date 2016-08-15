@@ -27,36 +27,75 @@ public class BinderPackage {
         this.list = list;
     }
 
+
+    private void doBind(IViewHolder holder, int position,int key,BinderTarget bt){
+        View view = holder.getView(key);
+        Field field = bt.getField();
+        Object value = null;
+        if (field != null) {
+            try {
+                value = field.get(list.get(position));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            if (value == null)
+                return;
+        }
+        Method method = bt.getMethod();
+        Method ltnmethod = bt.getLtnMethod();
+        Object ltnImpl = bt.getLtnImpl();
+        try {
+            if (method != null)
+                method.invoke(view,value);
+            if (ltnmethod != null) {
+                ltnmethod.invoke(view, ltnImpl);
+                view.setTag(position);
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void doBind(ViewHolder holder, int position,int key,BinderTarget bt){
+        View view = holder.getView(key);
+        Field field = bt.getField();
+        Object value = null;
+        if (field != null) {
+            try {
+                value = field.get(list.get(position));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            if (value == null)
+                return;
+        }
+        Method method = bt.getMethod();
+        Method ltnmethod = bt.getLtnMethod();
+        Object ltnImpl = bt.getLtnImpl();
+        try {
+            if (method != null)
+                method.invoke(view,value);
+            if (ltnmethod != null) {
+                ltnmethod.invoke(view, ltnImpl);
+                view.setTag(position);
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void setHolder(IViewHolder holder, int position){
         for (int i = 0;i < bindlist.size();i++){
             int key = bindlist.keyAt(i);
             BinderTarget bt = bindlist.get(key);
-            View view = holder.getView(key);
-            Field field = bt.getField();
-            Object value = null;
-            if (field != null) {
-                try {
-                    value = field.get(list.get(position));
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-                if (value == null)
-                    return;
-            }
-            Method method = bt.getMethod();
-            Method ltnmethod = bt.getLtnMethod();
-            Object ltnImpl = bt.getLtnImpl();
-            try {
-                if (method != null)
-                    method.invoke(view,value);
-                if (ltnmethod != null) {
-                    ltnmethod.invoke(view, ltnImpl);
-                    view.setTag(position);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
+            doBind(holder,position,key,bt);
+            if (bt.list != null){
+                for (BinderTarget binderTarget:bt.list)
+                    doBind(holder,position,key,binderTarget);
             }
         }
     }
@@ -65,32 +104,10 @@ public class BinderPackage {
         for (int i = 0;i < bindlist.size();i++){
             int key = bindlist.keyAt(i);
             BinderTarget bt = bindlist.get(key);
-            View view = holder.getView(key);
-            Field field = bt.getField();
-            Object value = null;
-            if (field != null) {
-                try {
-                    value = field.get(list.get(position));
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-                if (value == null)
-                    return;
-            }
-            Method method = bt.getMethod();
-            Method ltnmethod = bt.getLtnMethod();
-            Object ltnImpl = bt.getLtnImpl();
-            try {
-                if (method != null)
-                    method.invoke(view,value);
-                if (ltnmethod != null) {
-                    ltnmethod.invoke(view, ltnImpl);
-                    view.setTag(position);
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
+            doBind(holder,position,key,bt);
+            if (bt.list != null){
+                for (BinderTarget binderTarget:bt.list)
+                    doBind(holder,position,key,binderTarget);
             }
         }
     }
@@ -112,6 +129,7 @@ public class BinderPackage {
     }
 
     public class BinderTarget{
+
         private Class type;
         private Method method;
         private Field field;
@@ -119,6 +137,8 @@ public class BinderPackage {
         private Object ltnImpl;
         private Method ltnMethod;
         private Class ltnType;
+
+        public List<BinderTarget> list;
 
         public BinderTarget(Class type, Field field, Method method) {
             this.type = type;

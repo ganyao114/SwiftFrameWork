@@ -10,7 +10,7 @@ import java.util.ArrayList;
 /**
  * Created by pc on 16/8/13.
  */
-public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class HeadFooterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int TYPE_HEADER_VIEW = Integer.MIN_VALUE;
     private static final int TYPE_FOOTER_VIEW = Integer.MIN_VALUE + 1;
@@ -57,10 +57,10 @@ public class LoadMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     };
 
-    public LoadMoreAdapter() {
+    public HeadFooterAdapter() {
     }
 
-    public LoadMoreAdapter(RecyclerView.Adapter innerAdapter) {
+    public HeadFooterAdapter(RecyclerView.Adapter innerAdapter) {
         setAdapter(innerAdapter);
     }
 

@@ -20,6 +20,7 @@ import net.gy.SwiftFrameWork.UI.view.recyclerview.adapter.NomRcViewAdapter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -113,9 +114,15 @@ public class ListBinder {
                             binderPackage.getBindlist().put(item,target);
                         }else {
                             BinderPackage.BinderTarget tar = binderPackage.getBindlist().get(item);
-                            tar.setLtnImpl(ltn);
-                            tar.setLtnMethod(method);
-                            tar.setLtnType(ltnannobase.listenerType());
+                            if (tar.getLtnMethod()==null){
+                                tar.setLtnImpl(ltn);
+                                tar.setLtnMethod(method);
+                                tar.setLtnType(ltnannobase.listenerType());
+                            }else {
+                                if (tar.list == null)
+                                    tar.list = new ArrayList<BinderPackage.BinderTarget>();
+                                tar.list.add(target);
+                            }
                         }
                     }
                 }

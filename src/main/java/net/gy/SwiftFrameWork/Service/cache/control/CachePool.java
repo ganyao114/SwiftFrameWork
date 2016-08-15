@@ -1,9 +1,12 @@
 package net.gy.SwiftFrameWork.Service.cache.control;
 
 import net.gy.SwiftFrameWork.Service.cache.ICachePool;
+import net.gy.SwiftFrameWork.Service.cache.IRamCache;
 import net.gy.SwiftFrameWork.Service.cache.entity.ICache;
+import net.gy.SwiftFrameWork.Service.cache.entity.ICacheEntry;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by pc on 16/8/9.
@@ -14,9 +17,13 @@ public class CachePool<K,V> implements ICachePool<K,V>{
 
     private CachePoolGroup parent;
 
-    private ICache<K,V> cache;
+    private ICacheEntry<K,V> cache;
+
+    protected int level;
 
     private boolean compressable = false;
+
+    public AtomicBoolean isMtc = new AtomicBoolean(false);
 
     public static ICachePool buildPool(){
         if (poolRoot == null){
@@ -60,21 +67,22 @@ public class CachePool<K,V> implements ICachePool<K,V>{
 
     @Override
     public V findByKey(K key) {
-        return null;
+        return cache.get(key);
     }
 
     @Override
-    public V findByRoute(String route) {
-        return null;
+    public V findByRoute(Object[] route) {
+        V v = cache.get((K) route[level]);
+        return v;
     }
 
     @Override
     public V delById(K key) {
-        return null;
+        return cache.remove(key);
     }
 
     @Override
-    public V delByRoute(String route) {
+    public V delByRoute(Object[] route) {
         return null;
     }
 
@@ -84,12 +92,32 @@ public class CachePool<K,V> implements ICachePool<K,V>{
     }
 
     @Override
-    public V refreshByRoute(String route) {
+    public V refreshByRoute(Object[] route) {
         return null;
     }
 
     @Override
     public boolean compressable() {
         return compressable;
+    }
+
+    @Override
+    public int getLevel() {
+        return level;
+    }
+
+    @Override
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    @Override
+    public void setMtc(boolean b) {
+        isMtc.set(b);
+    }
+
+    @Override
+    public boolean isMtc() {
+        return isMtc.get();
     }
 }
