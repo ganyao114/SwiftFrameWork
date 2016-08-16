@@ -7,7 +7,7 @@ public interface ICachePool <K,V>{
     public void init();
     public void recycle();
     public long getSize();
-    public void compress();
+    public void compress(int FLAG);
     public ICachePool getParent();
     public V findByKey(K key);
     public V findByRoute(Object[] route);

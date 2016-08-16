@@ -31,7 +31,7 @@ public class RecycleWorkThread implements Runnable{
 
     private void recycle() {
         pool.getSize();
-        pool.compress();
+//        pool.compress();
         pool.recycle();
         
     }

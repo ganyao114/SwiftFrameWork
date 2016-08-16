@@ -56,9 +56,10 @@ public class CachePool<K,V> implements ICachePool<K,V>{
     }
 
     @Override
-    public void compress() {
+    public void compress(int FLAG) {
 
     }
+
 
     @Override
     public ICachePool getParent() {

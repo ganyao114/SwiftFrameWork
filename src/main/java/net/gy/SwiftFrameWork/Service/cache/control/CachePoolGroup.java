@@ -26,6 +26,8 @@ public class CachePoolGroup<K> extends CachePool{
     @Override
     public Object findByRoute(Object[] route) {
         ICachePool cachePool = poolMap.get(route[level]);
+        if (cachePool == null)
+            return null;
         return cachePool.findByRoute(route);
     }
 
@@ -43,8 +45,8 @@ public class CachePoolGroup<K> extends CachePool{
     }
 
     @Override
-    public void compress() {
-        super.compress();
+    public void compress(int FLAG) {
+        super.compress(FLAG);
     }
 
     @Override
