@@ -9,11 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import net.gy.SwiftFrameWork.IOC.UI.view.viewinject.impl.ViewInjectAll;
+import net.gy.SwiftFrameWork.MVP.Presenter.Presenter;
+import net.gy.SwiftFrameWork.MVP.View.context.IContext;
+import net.gy.SwiftFrameWork.MVP.View.context.activity.IActivity;
+import net.gy.SwiftFrameWork.MVP.View.context.activity.IActivityCallback;
 
 /**
  * Created by gy on 2015/11/30.
  */
-public abstract class BaseFragmentV4 extends Fragment{
+public abstract class BaseFragmentV4<T extends Presenter> extends Fragment{
     protected View view;
     private SparseArray<View> mViews = new SparseArray<View>();
     @Nullable
@@ -37,6 +41,14 @@ public abstract class BaseFragmentV4 extends Fragment{
             mViews.put(ViewId, viewrt);
         }
         return viewrt;
+    }
+
+    public T getPresenter(){
+        if (getContext() instanceof IContext){
+            IContext<T> iContext = (IContext<T>) getContext();
+            return iContext.getPresent();
+        }
+        return null;
     }
 
 }
