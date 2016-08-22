@@ -1,26 +1,40 @@
 package net.gy.SwiftFrameWork.Service.cache.control;
 
 import net.gy.SwiftFrameWork.Service.cache.ICachePool;
+import net.gy.SwiftFrameWork.Service.cache.config.PoolType;
+import net.gy.SwiftFrameWork.Service.cache.entity.RootCachePool;
 
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Created by pc on 16/8/9.
  */
 public class CachePoolGroup<K> extends CachePool{
-    private Map<K,ICachePool> poolMap;
-    public void addPool(CachePool pool){
 
-    }
+    protected Map<K,ICachePool> poolMap;
+
 
     @Override
     public Object delById(Object key) {
+        Object value = poolMap.get(key);
+        if (value == null)
+        {
+
+        }
         return super.delById(key);
     }
 
     @Override
     public Object delByRoute(Object[] route) {
-        return super.delByRoute(route);
+        if (route.length == level + 1)
+            return poolMap.remove(route[level]);
+        ICachePool cachePool = poolMap.get(route[level]);
+        if (cachePool == null)
+            return null;
+        else
+            return cachePool.delByRoute(route);
     }
 
     @Override
@@ -50,6 +64,38 @@ public class CachePoolGroup<K> extends CachePool{
     }
 
     @Override
+    public boolean putPool(Object[] key, ICachePool v) {
+
+        if (key.length == level + 1){
+            if (!poolMap.containsKey(key[level]))
+                return false;
+            v.setLevel(level + 1);
+            poolMap.put((K) key[level],v);
+        }else if (key.length > level + 1){
+            if (poolMap.containsKey(key[level]))
+                return false;
+            ICachePool cachePool = poolMap.get(key[level]);
+            cachePool.putPool(key, v);
+        }else {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean put(Object[] key, Object o) {
+        if (key.length > level + 1){
+            if (!poolMap.containsKey(key[level]))
+                return false;
+            ICachePool cachePool = poolMap.get(key[level]);
+            cachePool.put(key, o);
+        }else {
+            return false;
+        }
+        return super.put(key, o);
+    }
+
+    @Override
     public long getSize() {
         return super.getSize();
     }
@@ -60,8 +106,8 @@ public class CachePoolGroup<K> extends CachePool{
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void init(PoolType type) {
+
     }
 
     public <I,T> T dispatchCache(I id){
@@ -73,5 +119,12 @@ public class CachePoolGroup<K> extends CachePool{
             t = (T) pool.findByKey(null);
         }
         return t;
+    }
+
+    public synchronized static void initPool(PoolType Type){
+        if (poolRoot == null){
+            poolRoot = new RootCachePool();
+            poolRoot.init(Type);
+        }
     }
 }

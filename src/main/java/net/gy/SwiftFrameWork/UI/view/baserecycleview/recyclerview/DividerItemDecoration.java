@@ -10,9 +10,12 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.IdRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import net.gy.SwiftFrameWork.R;
 
 
 /**
@@ -38,6 +41,11 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         final TypedArray a = context.obtainStyledAttributes(ATTRS);
         mDivider = a.getDrawable(0);
         a.recycle();
+        setOrientation(orientation);
+    }
+
+    public DividerItemDecoration(Context context, int orientation,int color) {
+        mDivider = context.getDrawable(color);
         setOrientation(orientation);
     }
 

@@ -2,6 +2,7 @@ package net.gy.SwiftFrameWork.Service.cache.control;
 
 import net.gy.SwiftFrameWork.Service.cache.ICachePool;
 import net.gy.SwiftFrameWork.Service.cache.IRamCache;
+import net.gy.SwiftFrameWork.Service.cache.config.PoolType;
 import net.gy.SwiftFrameWork.Service.cache.entity.ICache;
 import net.gy.SwiftFrameWork.Service.cache.entity.ICacheEntry;
 
@@ -17,7 +18,7 @@ public class CachePool<K,V> implements ICachePool<K,V>{
 
     private CachePoolGroup parent;
 
-    private ICacheEntry<K,V> cache;
+    protected ICacheEntry<K,V> cache;
 
     protected int level;
 
@@ -25,23 +26,23 @@ public class CachePool<K,V> implements ICachePool<K,V>{
 
     public AtomicBoolean isMtc = new AtomicBoolean(false);
 
-    public static ICachePool buildPool(){
-        if (poolRoot == null){
-            synchronized (CachePool.class){
-                if (poolRoot == null){
-                    establish();
-                }
-            }
-        }
-        return poolRoot;
-    }
-
-    private static void establish() {
-
-    }
+//    public static ICachePool buildPool(){
+//        if (poolRoot == null){
+//            synchronized (CachePool.class){
+//                if (poolRoot == null){
+//                    establish();
+//                }
+//            }
+//        }
+//        return poolRoot;
+//    }
+//
+//    private static void establish() {
+//
+//    }
 
     @Override
-    public void init() {
+    public void init(PoolType type) {
 
     }
 
@@ -67,12 +68,27 @@ public class CachePool<K,V> implements ICachePool<K,V>{
     }
 
     @Override
+    public boolean put(Object[] key, V v) {
+        if (key.length != level+1)
+            return false;
+        cache.put((K) key[level],v);
+        return true;
+    }
+
+    @Override
+    public boolean putPool(Object[] key, ICachePool v) {
+        return false;
+    }
+
+    @Override
     public V findByKey(K key) {
         return cache.get(key);
     }
 
     @Override
     public V findByRoute(Object[] route) {
+        if (route.length != level+1)
+            return null;
         V v = cache.get((K) route[level]);
         return v;
     }
@@ -84,12 +100,13 @@ public class CachePool<K,V> implements ICachePool<K,V>{
 
     @Override
     public V delByRoute(Object[] route) {
-        return null;
+        return cache.remove((K) route[level]);
     }
 
     @Override
     public V refreshByKey(K key) {
-        return null;
+        V v = cache.get(key);
+        return v;
     }
 
     @Override
@@ -121,4 +138,9 @@ public class CachePool<K,V> implements ICachePool<K,V>{
     public boolean isMtc() {
         return isMtc.get();
     }
+
+    public static ICachePool getRoot(){
+        return poolRoot;
+    }
+
 }

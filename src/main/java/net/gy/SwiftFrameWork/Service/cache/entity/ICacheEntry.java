@@ -15,4 +15,6 @@ public interface ICacheEntry<K, V> {
 
     public void setlimit(long size);
 
+    public long compress();
+
 }
