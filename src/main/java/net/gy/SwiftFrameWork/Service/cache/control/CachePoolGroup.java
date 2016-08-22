@@ -67,7 +67,7 @@ public class CachePoolGroup<K> extends CachePool{
     public boolean putPool(Object[] key, ICachePool v) {
 
         if (key.length == level + 1){
-            if (!poolMap.containsKey(key[level]))
+            if (poolMap.containsKey(key[level]))
                 return false;
             v.setLevel(level + 1);
             poolMap.put((K) key[level],v);
@@ -92,7 +92,7 @@ public class CachePoolGroup<K> extends CachePool{
         }else {
             return false;
         }
-        return super.put(key, o);
+        return true;
     }
 
     @Override
@@ -121,10 +121,5 @@ public class CachePoolGroup<K> extends CachePool{
         return t;
     }
 
-    public synchronized static void initPool(PoolType Type){
-        if (poolRoot == null){
-            poolRoot = new RootCachePool();
-            poolRoot.init(Type);
-        }
-    }
+
 }

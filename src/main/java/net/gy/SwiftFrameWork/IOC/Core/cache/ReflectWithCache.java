@@ -10,17 +10,18 @@ import java.util.Map;
  */
 public class ReflectWithCache {
 
-    private ReflectCacheControl cacheControl;
+    private static ReflectCacheControl cacheControl = ReflectCacheControl.getInstance();
 
-    public Map getClassAnnoWithType(Class clazz){
+
+    public static Map<Class<? extends Annotation>,Annotation> getClassAnnoWithType(Class clazz){
         Object[] route = new Object[]{ReflectCacheRoute.clazz,clazz};
         Object annotations = CachePool.getRoot().findByRoute(route);
         if (annotations == null)
             cacheControl.decodeClass(clazz);
-        return (Map) CachePool.getRoot().findByRoute(route);
+        return (Map<Class<? extends Annotation>,Annotation>) CachePool.getRoot().findByRoute(route);
     }
 
-    public FieldEntity[] getFieldsWithType(Class clazz){
+    public static FieldEntity[] getFieldsWithType(Class clazz){
         Object[] route = new Object[]{ReflectCacheRoute.field,clazz};
         Object entities = CachePool.getRoot().findByRoute(route);
         if (entities == null)
@@ -28,13 +29,15 @@ public class ReflectWithCache {
         return (FieldEntity[]) CachePool.getRoot().findByRoute(route);
     }
 
-    public MethodEntity[] getMethodsWithType(Class clazz){
+    public static MethodEntity[] getMethodsWithType(Class clazz){
         Object[] route = new Object[]{ReflectCacheRoute.methed,clazz};
         Object entities = CachePool.getRoot().findByRoute(route);
         if (entities == null)
-            cacheControl.decodeFeild(clazz);
+            cacheControl.decodeMethod(clazz);
         return (MethodEntity[]) CachePool.getRoot().findByRoute(route);
     }
+
+
 
 
 }

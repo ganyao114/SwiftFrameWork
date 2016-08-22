@@ -9,6 +9,7 @@ import java.util.List;
  */
 public class ReflectMethedCache extends CachePool<Class,MethodEntity[]>{
 
-
-
+    public ReflectMethedCache() {
+        cache = new MethodCache();
+    }
 }

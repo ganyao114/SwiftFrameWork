@@ -11,6 +11,10 @@ import android.widget.GridView;
 import android.widget.ListView;
 
 import net.gy.SwiftFrameWork.IOC.Core.annotation.InjectCollectionView;
+import net.gy.SwiftFrameWork.IOC.Core.cache.FieldEntity;
+import net.gy.SwiftFrameWork.IOC.Core.cache.MethodEntity;
+import net.gy.SwiftFrameWork.IOC.Core.cache.ReflectCacheControl;
+import net.gy.SwiftFrameWork.IOC.Core.cache.ReflectWithCache;
 import net.gy.SwiftFrameWork.IOC.Core.entity.CollectionViewType;
 import net.gy.SwiftFrameWork.IOC.Core.entity.InjectCollectionViewBean;
 import net.gy.SwiftFrameWork.IOC.Core.entity.InjectEntity;
@@ -29,6 +33,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by gy on 2015/12/7.
@@ -75,9 +80,14 @@ public class ViewInjectAll extends InjectBase {
     }
 
     private void injectClass(Class<?> template, Object object, LayoutInflater inflater,ViewGroup contain) {
-        ContentView contentView = template.getAnnotation(ContentView.class);
+        Map<Class<? extends Annotation>,Annotation> annoMap = ReflectWithCache.getClassAnnoWithType(template);
+        if (annoMap == null)
+            return;
+        Annotation ct = annoMap.get(ContentView.class);
+        if (ct == null)
+            return;
+        ContentView contentView = (ContentView) ct;
         View view;
-        if (contentView != null){
             Class<?> clazz = getKind(object);
             if (clazz.equals(Activity.class)){
                 WeakReference<Activity> activity = new WeakReference<Activity>((Activity) object);
@@ -94,29 +104,47 @@ public class ViewInjectAll extends InjectBase {
                 view = inflater.inflate(contentView.value(),contain,false);
                 get(object).setView(view);
             }
-        }
     }
 
     private void injectMethod(Class<?> template, Object object) {
-        Method[] methods = template.getDeclaredMethods();
-        for (Method method:methods){
-            Annotation[] annotations = method.getDeclaredAnnotations();
-            if (annotations == null)
-                return;
-            for (Annotation annotation:annotations){
-                Class<? extends Annotation> annotationType = annotation
-                        .annotationType();
-                //拿到注解上的注解
-                EventBase eventBaseAnnotation = annotationType
+//        Method[] methods = template.getDeclaredMethods();
+//        for (Method method:methods){
+//            Annotation[] annotations = method.getDeclaredAnnotations();
+//            if (annotations == null)
+//                return;
+//            for (Annotation annotation:annotations){
+//                Class<? extends Annotation> annotationType = annotation
+//                        .annotationType();
+//                //拿到注解上的注解
+//                EventBase eventBaseAnnotation = annotationType
+//                        .getAnnotation(EventBase.class);
+//                if (eventBaseAnnotation!=null){
+//                    doInjectEvents(object,eventBaseAnnotation,
+//                            annotation,method,annotationType);
+//                }else if (annotation.annotationType().equals(InjectCollectionView.class)){
+//                    doInjectCollection(object,method);
+//                }
+//            }
+//        }
+
+        MethodEntity[] entities = ReflectWithCache.getMethodsWithType(template);
+        for (MethodEntity methodEntity:entities){
+            for (Map.Entry<Class<? extends Annotation>,Annotation> entry
+                    :methodEntity.getAnnotations().entrySet())
+            {
+                Class<? extends Annotation> annoType = entry.getKey();
+                EventBase eventBaseAnnotation = annoType
                         .getAnnotation(EventBase.class);
                 if (eventBaseAnnotation!=null){
                     doInjectEvents(object,eventBaseAnnotation,
-                            annotation,method,annotationType);
-                }else if (annotation.annotationType().equals(InjectCollectionView.class)){
-                    doInjectCollection(object,method);
+                            entry.getValue(),methodEntity.getMethod(),annoType);
+                }else if (annoType.equals(InjectCollectionView.class)){
+                    doInjectCollection(object,methodEntity.getMethod());
                 }
+
             }
         }
+
     }
 
     private void doInjectCollection(Object object, Method method) {
@@ -187,27 +215,40 @@ public class ViewInjectAll extends InjectBase {
     }
 
     private void injectField(Class<?> template, Object object) {
-        Field[] fields = template.getDeclaredFields();
-        for (Field field:fields){
-            Annotation[] annotations = field.getDeclaredAnnotations();
-            if (annotations == null)
-                return;
-            for (Annotation annotation:annotations){
-                if (annotation.annotationType().equals(ViewInject.class)){
-                    doViewInject(field,object);
-                }else{
+//        Field[] fields = template.getDeclaredFields();
+//        for (Field field:fields){
+//            Annotation[] annotations = field.getDeclaredAnnotations();
+//            if (annotations == null)
+//                return;
+//            for (Annotation annotation:annotations){
+//                if (annotation.annotationType().equals(ViewInject.class)){
+//                    doViewInject(field,object);
+//                }else{
+//
+//                }
+//            }
+//        }
 
-                }
-            }
+        FieldEntity[] entities = ReflectWithCache.getFieldsWithType(template);
+        if (entities == null)
+            return;
+        for (FieldEntity entity:entities){
+
+            Annotation inject = entity.get(ViewInject.class);
+            if (inject!=null)
+                doViewInject(entity.getField(),object,inject);
+
         }
+
+
     }
 
-    private void doViewInject(Field field, Object object) {
-        ViewInject viewInject = field.getAnnotation(ViewInject.class);
+    private void doViewInject(Field field, Object object, Annotation inject) {
+        ViewInject viewInject = (ViewInject) inject;
         if (get(object).getActivityRefrence()!=null){
             Object resView = (get(object).getActivityRefrence().get())
                     .findViewById(viewInject.value());
-            field.setAccessible(true);
+//            field.setAccessible(true);
             try {
                 field.set(object, resView);
             } catch (IllegalAccessException e) {
@@ -216,7 +257,7 @@ public class ViewInjectAll extends InjectBase {
         }else if(get(object).getFragmentRefrence()!=null||get(object).getFragmentV4Refrence()!=null){
             Object resView = (get(object).getView())
                     .findViewById(viewInject.value());
-            field.setAccessible(true);
+//            field.setAccessible(true);
             try {
                 field.set(object, resView);
             } catch (IllegalAccessException e) {

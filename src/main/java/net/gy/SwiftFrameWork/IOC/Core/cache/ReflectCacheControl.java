@@ -39,6 +39,7 @@ public class ReflectCacheControl {
         CachePool.getRoot().putPool(new Object[]{ReflectCacheRoute.clazz},new ReflectClassCache());
         CachePool.getRoot().putPool(new Object[]{ReflectCacheRoute.field},new ReflectFieldCache());
         CachePool.getRoot().putPool(new Object[]{ReflectCacheRoute.methed},new ReflectMethedCache());
+        needcache = new HashMap<>();
     }
 
     public static ReflectCacheControl getInstance(){
@@ -51,15 +52,6 @@ public class ReflectCacheControl {
         return control;
     }
 
-    public void dodecode(List<Class> classes){
-
-        for (Class clazz:classes){
-            decodeClass(clazz);
-            decodeMethod(clazz);
-            decodeFeild(clazz);
-        }
-
-    }
 
     public void decodeFeild(Class clazz) {
         Field[] fields = clazz.getDeclaredFields();
@@ -78,11 +70,12 @@ public class ReflectCacheControl {
             }
             entities.add(entity);
         }
-
-        if (entities.size()==0)
-            return;
-        FieldEntity[] fieldEntities = entities.toArray(new FieldEntity[]{});
         Object[] route = new Object[]{ReflectCacheRoute.field,clazz};
+        if (entities.size()==0) {
+            CachePool.getRoot().put(route,new FieldEntity[]{});
+            return;
+        }
+        FieldEntity[] fieldEntities = entities.toArray(new FieldEntity[]{});
         CachePool.getRoot().put(route,fieldEntities);
     }
 
@@ -103,16 +96,18 @@ public class ReflectCacheControl {
             }
             entities.add(entity);
         }
-        if (entities.size()==0)
-            return;
-        MethodEntity[] methodEntity = entities.toArray(new MethodEntity[]{});
         Object[] route = new Object[]{ReflectCacheRoute.methed,clazz};
+        if (entities.size()==0) {
+            CachePool.getRoot().put(route,new MethodEntity[]{});
+            return;
+        }
+        MethodEntity[] methodEntity = entities.toArray(new MethodEntity[]{});
         CachePool.getRoot().put(route,methodEntity);
     }
 
     public void decodeClass(Class clazz) {
         Annotation[] annotations = clazz.getAnnotations();
-        if (annotations==null||annotations.length==0)
+        if (annotations==null)
             return;
         Map<Class<? extends Annotation>,Annotation> map = new HashMap<>();
         for (Annotation annotation:annotations){
@@ -120,6 +115,34 @@ public class ReflectCacheControl {
         }
         Object[] route = new Object[]{ReflectCacheRoute.clazz,clazz};
         CachePool.getRoot().put(route,map);
+    }
+
+    public void AddpreLoad(ClassType types,Class[] classes){
+        if (needcache.containsKey(types)){
+            List<Class> list = needcache.get(types);
+            for (Class clazz:classes)
+                list.add(clazz);
+        }else {
+            List<Class> list = new ArrayList<>();
+            for (Class clazz:classes)
+                list.add(clazz);
+            needcache.put(types,list);
+        }
+    }
+
+    public void preLoad(List<Class> list){
+        for (Class clazz:list){
+            decodeClass(clazz);
+            decodeMethod(clazz);
+            decodeFeild(clazz);
+        }
+    }
+
+    public void preLoad(ClassType type){
+        List<Class> list = needcache.get(type);
+        Log.e("gy","size"+list.size());
+        if (list!=null)
+            preLoad(list);
     }
 
 //    private List<>

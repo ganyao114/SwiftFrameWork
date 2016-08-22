@@ -47,13 +47,13 @@ public class AnnotationFactory {
     }
 
     public void getContextAnnotations() {
-        Class<?>[] contextClazzs = getAllActivity();
+        Class<?>[] contextClazzs = getAllActivity(application);
         for (Class<?> contextClazz : contextClazzs) {
             doGetContextAnnotations(contextClazz);
         }
     }
 
-    private Class<?>[] getAllActivity() {
+    public static Class<?>[] getAllActivity(Application application) {
         PackageManager pManager = application.getPackageManager();
         Class<?>[] classes = null;
         try {

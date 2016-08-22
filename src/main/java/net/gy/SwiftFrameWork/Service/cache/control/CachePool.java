@@ -5,6 +5,7 @@ import net.gy.SwiftFrameWork.Service.cache.IRamCache;
 import net.gy.SwiftFrameWork.Service.cache.config.PoolType;
 import net.gy.SwiftFrameWork.Service.cache.entity.ICache;
 import net.gy.SwiftFrameWork.Service.cache.entity.ICacheEntry;
+import net.gy.SwiftFrameWork.Service.cache.entity.RootCachePool;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -20,7 +21,7 @@ public class CachePool<K,V> implements ICachePool<K,V>{
 
     protected ICacheEntry<K,V> cache;
 
-    protected int level;
+    protected int level = 0;
 
     private boolean compressable = false;
 
@@ -100,6 +101,8 @@ public class CachePool<K,V> implements ICachePool<K,V>{
 
     @Override
     public V delByRoute(Object[] route) {
+        if (route.length != level+1)
+            return null;
         return cache.remove((K) route[level]);
     }
 
@@ -141,6 +144,13 @@ public class CachePool<K,V> implements ICachePool<K,V>{
 
     public static ICachePool getRoot(){
         return poolRoot;
+    }
+
+    public synchronized static void initPool(PoolType Type){
+        if (poolRoot == null){
+            poolRoot = new RootCachePool();
+            poolRoot.init(Type);
+        }
     }
 
 }

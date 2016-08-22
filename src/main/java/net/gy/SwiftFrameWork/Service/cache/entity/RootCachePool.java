@@ -16,6 +16,4 @@ public class RootCachePool extends CachePoolGroup{
         poolRoot = this;
     }
 
-
-
 }

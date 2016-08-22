@@ -11,9 +11,12 @@ import net.gy.SwiftFrameWork.IOC.Model.local.resource.impl.ResLoader;
 import net.gy.SwiftFrameWork.IOC.Model.local.shareprefrence.impl.SharePrefrenceUtils;
 import net.gy.SwiftFrameWork.IOC.Model.net.http.impl.HttpInjectUtil;
 import net.gy.SwiftFrameWork.IOC.Service.event.impl.EventPoster;
+import net.gy.SwiftFrameWork.IOC.Service.thread.entity.Asyc;
 import net.gy.SwiftFrameWork.IOC.Service.thread.impl.InjectAsycTask;
 import net.gy.SwiftFrameWork.IOC.UI.view.viewbinder.impl.ListBinder;
 import net.gy.SwiftFrameWork.IOC.UI.view.viewinject.impl.ViewInjectAll;
+import net.gy.SwiftFrameWork.Service.cache.config.PoolType;
+import net.gy.SwiftFrameWork.Service.cache.control.CachePool;
 import net.gy.SwiftFrameWork.Service.loader.imgloader.IImageLoader;
 import net.gy.SwiftFrameWork.Service.loader.imgloader.strategy.mystrategy.entity.ImgLoadConfigs;
 import net.gy.SwiftFrameWork.Service.loader.imgloader.strategy.mystrategy.impl.ImageLoader;
@@ -25,6 +28,7 @@ public class S {
 
     public static void init(Application application){
         IOC.getInstance().init(application);
+        CachePool.initPool(PoolType.Sync);
     }
 
     public static EventPoster Event(){
