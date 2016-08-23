@@ -134,9 +134,9 @@ public class ListBinder {
                     if (method==null)
                         continue;
                     Object ltn = ltnImpl;
-                    BinderPackage.BinderTarget target =
-                            binderPackage.new BinderTarget(ltn,method,ltnannobase.listenerType());
                     for (int item:getItems(anno)){
+                        BinderPackage.BinderTarget target =
+                                binderPackage.new BinderTarget(ltn,method,ltnannobase.listenerType());
                         if (binderPackage.getBindlist().get(item)==null){
                             binderPackage.getBindlist().put(item,target);
                         }else {

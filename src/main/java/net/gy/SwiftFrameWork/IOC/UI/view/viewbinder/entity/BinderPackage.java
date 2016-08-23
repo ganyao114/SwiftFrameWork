@@ -58,6 +58,8 @@ public class BinderPackage {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
             e.printStackTrace();
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -89,13 +91,15 @@ public class BinderPackage {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
             e.printStackTrace();
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 
     public void setHolder(IViewHolder holder, int position){
         for (int i = 0;i < bindlist.size();i++){
             int key = bindlist.keyAt(i);
-            BinderTarget bt = bindlist.get(key);
+            BinderTarget bt = bindlist.valueAt(i);
             doBind(holder,position,key,bt);
             if (bt.list != null){
                 for (BinderTarget binderTarget:bt.list)
@@ -107,7 +111,7 @@ public class BinderPackage {
     public void setHolder(ViewHolder holder, int position){
         for (int i = 0;i < bindlist.size();i++){
             int key = bindlist.keyAt(i);
-            BinderTarget bt = bindlist.get(key);
+            BinderTarget bt = bindlist.valueAt(i);
             doBind(holder,position,key,bt);
             if (bt.list != null){
                 for (BinderTarget binderTarget:bt.list)
