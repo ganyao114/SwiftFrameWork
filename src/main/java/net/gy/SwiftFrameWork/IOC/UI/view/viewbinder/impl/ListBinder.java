@@ -1,9 +1,13 @@
 package net.gy.SwiftFrameWork.IOC.UI.view.viewbinder.impl;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 
+import net.gy.SwiftFrameWork.IOC.Core.cache.FieldEntity;
+import net.gy.SwiftFrameWork.IOC.Core.cache.MethodEntity;
+import net.gy.SwiftFrameWork.IOC.Core.cache.ReflectWithCache;
 import net.gy.SwiftFrameWork.IOC.Core.entity.ClassMemberPackage;
 import net.gy.SwiftFrameWork.IOC.Core.parase.ClassMemberParase;
 import net.gy.SwiftFrameWork.IOC.UI.view.viewbinder.annotation.ListBinderBase;
@@ -23,6 +27,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by gy on 2016/3/15.
@@ -64,25 +69,36 @@ public class ListBinder {
             clazz = list.get(0).getClass();
         else
             clazz = clazzType;
+
         ListDataSrc listDataSrc = (ListDataSrc) clazz.getAnnotation(ListDataSrc.class);
         if (listDataSrc == null)
             return;
-        List<ClassMemberPackage> mems = null;
-        try {
-            mems = ClassMemberParase.GetFileds(list.get(0));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (mems == null||mems.size()==0)
-            return;
+//        Map<Class<? extends Annotation>,Annotation> map = ReflectWithCache.getClassAnnoWithType(clazz);
+//        if (map == null)
+//            return;
+//        Annotation annotation = map.get(ListDataSrc.class);
+//        if (annotation == null)
+//            return;
+//        ListDataSrc listDataSrc = (ListDataSrc) annotation;
+//        List<ClassMemberPackage> mems = null;
+//        try {
+//            mems = ClassMemberParase.GetFileds(list.get(0));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        if (mems == null||mems.size()==0)
+//            return;
+        FieldEntity[] fieldEntities = ReflectWithCache.getFieldsWithType(clazz);
         final BinderPackage binderPackage = new BinderPackage();
         binderPackage.setList(list);
-        for (ClassMemberPackage mem : mems){
-            Annotation[] annotations = mem.getAnnotations();
-            for (Annotation anno : annotations){
-                ListBinderBase annobase = anno.annotationType()
+        for (FieldEntity entity : fieldEntities){
+            Map<Class<? extends Annotation>,Annotation> annotations = entity.getAnnotations();
+            for (Map.Entry<Class<? extends Annotation>,Annotation> entry: annotations.entrySet()){
+                Annotation anno = entry.getValue();
+                Class<? extends Annotation> annoType = entry.getKey();
+                ListBinderBase annobase = annoType
                         .getAnnotation(ListBinderBase.class);
-                ListBinderLtnBase ltnannobase = anno.annotationType()
+                ListBinderLtnBase ltnannobase = annoType
                         .getAnnotation(ListBinderLtnBase.class);
                 if (annobase!=null){
                     Method method = null;
@@ -92,11 +108,20 @@ public class ListBinder {
                         e.printStackTrace();
                     }
                     if (method != null) {
-                        BinderPackage.BinderTarget target =
-                                binderPackage.new BinderTarget(annobase.viewType(), mem.getField(), method);
 
-                        for (int item : getItems(anno))
-                            binderPackage.getBindlist().put(item, target);
+                        for (int item : getItems(anno)) {
+                            if (binderPackage.getBindlist().get(item) == null) {
+                                BinderPackage.BinderTarget target =
+                                        binderPackage.new BinderTarget(annobase.viewType(), entity.getField(), method);
+                                binderPackage.getBindlist().put(item, target);
+                            }
+                            else {
+                                BinderPackage.BinderTarget target = binderPackage.getBindlist().get(item);
+                                target.setType(annobase.viewType());
+                                target.setMethod(method);
+                                target.setField(entity.getField());
+                            }
+                        }
                     }
                 }
                 if (ltnannobase!=null){
