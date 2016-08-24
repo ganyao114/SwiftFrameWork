@@ -1,5 +1,7 @@
 package net.gy.SwiftFrameWork.IOC.Service.event.parase;
 
+import net.gy.SwiftFrameWork.IOC.Core.cache.MethodEntity;
+import net.gy.SwiftFrameWork.IOC.Core.cache.ReflectWithCache;
 import net.gy.SwiftFrameWork.IOC.Service.event.annotation.InjectEvent;
 import net.gy.SwiftFrameWork.IOC.Service.event.entity.EventPackage;
 import net.gy.SwiftFrameWork.IOC.Service.event.entity.EventThreadType;
@@ -31,18 +33,32 @@ public class EventAnnotationsFactory {
     public void getEventAnnotations(Object object) {
         Class<?> clazz = object.getClass();
         Class<?> template = clazz;
-        Method[] methods = clazz.getDeclaredMethods();
+//        Method[] methods = clazz.getDeclaredMethods();
+//        while (template != null && template != Object.class) {
+//            // 过滤掉基类 因为基类是不包含注解的
+//            if (template.getName().equals("android.app.Activity") || template.getName().equals("android.support.v4.app.FragmentActivity")
+//                    || template.getName().equals("android.support.v4.app.Fragment") || template.getName().equals("android.app.Fragment"))
+//                break;
+//            for (Method method : methods) {
+//                Annotation annotations[] = method.getAnnotations();
+//                for (Annotation annotation : annotations) {
+//                    if (annotation.annotationType().equals(InjectEvent.class))
+//                        doPutAnnotation(clazz, method, annotation,object);
+//                }
+//            }
+//            template = template.getSuperclass();
+//        }
+
         while (template != null && template != Object.class) {
             // 过滤掉基类 因为基类是不包含注解的
             if (template.getName().equals("android.app.Activity") || template.getName().equals("android.support.v4.app.FragmentActivity")
                     || template.getName().equals("android.support.v4.app.Fragment") || template.getName().equals("android.app.Fragment"))
                 break;
-            for (Method method : methods) {
-                Annotation annotations[] = method.getAnnotations();
-                for (Annotation annotation : annotations) {
-                    if (annotation.annotationType().equals(InjectEvent.class))
-                        doPutAnnotation(clazz, method, annotation,object);
-                }
+            MethodEntity[] entities = ReflectWithCache.getMethodsWithType(template);
+            for (MethodEntity entity : entities) {
+                Annotation annotation = entity.get(InjectEvent.class);
+                    if (annotation != null)
+                        doPutAnnotation(clazz, entity.getMethod(), annotation,object);
             }
             template = template.getSuperclass();
         }
@@ -50,7 +66,7 @@ public class EventAnnotationsFactory {
     }
 
     private void doPutAnnotation(Class clazz, Method method, Annotation annotation, Object object) {
-        InjectEvent eventAnnotation = method.getAnnotation(InjectEvent.class);
+        InjectEvent eventAnnotation = (InjectEvent) annotation;
         EventThreadType threadType = eventAnnotation.type();
         if (threadType == null)
             return;
