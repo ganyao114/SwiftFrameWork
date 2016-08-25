@@ -2,6 +2,8 @@ package net.gy.SwiftFrameWork.Service.loader.imgloader.strategy.mystrategy.cache
 
 import android.graphics.Bitmap;
 
+import net.gy.SwiftFrameWork.Service.loader.imgloader.strategy.mystrategy.impl.ImageLoader;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;

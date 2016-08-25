@@ -53,6 +53,16 @@ public class CachePool<K,V> implements ICachePool<K,V>{
     }
 
     @Override
+    public void destory() {
+
+    }
+
+    @Override
+    public void obtain() {
+
+    }
+
+    @Override
     public long getSize() {
         return 0;
     }

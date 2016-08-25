@@ -68,4 +68,33 @@ public class LoadThread implements IThreadInterface {
             return null;
         }
     }
+
+    @Override
+    public Bitmap getBitmap(String url, File f, ImageLoader.ImageSize size) throws Exception {
+        try {
+            Bitmap bitmap = null;
+            URL imageUrl = new URL(url);
+            HttpURLConnection conn = (HttpURLConnection) imageUrl
+                    .openConnection();
+            conn.setConnectTimeout(30000);
+            conn.setReadTimeout(30000);
+            conn.setInstanceFollowRedirects(true);
+            int responseCode = conn.getResponseCode();
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                throw new HttpServiceException("连接服务器出错");
+            }
+            InputStream is = conn.getInputStream();
+            OutputStream os = new FileOutputStream(f);
+
+            ImageLoader.CopyStream(is, os);
+            os.close();
+            bitmap = ImageLoader.decodeFile(f);
+            return bitmap;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+
 }

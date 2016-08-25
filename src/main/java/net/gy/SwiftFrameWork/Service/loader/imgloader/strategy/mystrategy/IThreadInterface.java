@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 
 import net.gy.SwiftFrameWork.Service.loader.imgloader.strategy.mystrategy.entity.PhotoToLoad;
+import net.gy.SwiftFrameWork.Service.loader.imgloader.strategy.mystrategy.impl.ImageLoader;
 
 import java.io.File;
 import java.util.concurrent.Future;
@@ -18,4 +19,6 @@ public interface IThreadInterface {
     public Runnable getLoadRunnable(Handler handler, PhotoToLoad photoToLoad, ImgLoadThreadCallBack context);
 
     public Bitmap getBitmap(String url, File f) throws Exception;
+
+    public Bitmap getBitmap(String url, File f, ImageLoader.ImageSize size) throws Exception;
 }

@@ -17,4 +17,5 @@ public interface ICacheEntry<K, V> {
 
     public long compress();
 
+
 }

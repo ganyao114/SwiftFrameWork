@@ -3,6 +3,7 @@ package net.gy.SwiftFrameWork.Service.loader.imgloader.strategy.mystrategy.impl;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Handler;
 import android.os.Message;
 import android.view.ViewGroup;
@@ -261,10 +262,29 @@ public class ImageLoader implements IImageLoader, ImgLoadThreadCallBack {
 
     }
 
+    public static Bitmap zoomImage(Bitmap bgimage, double newWidth,
+                                   double newHeight) {
+        // 获取这个图片的宽和高
+        float width = bgimage.getWidth();
+        float height = bgimage.getHeight();
+        // 创建操作图片用的matrix对象
+        Matrix matrix = new Matrix();
+        // 计算宽高缩放率
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // 缩放图片动作
+        matrix.postScale(scaleWidth, scaleHeight);
+        Bitmap bitmap = Bitmap.createBitmap(bgimage, 0, 0, (int) width,
+                (int) height, matrix, true);
+        return bitmap;
+    }
+
     @Override
     public void threadCall(PhotoToLoad photoToLoad, Bitmap bitmap) {
         // TODO Auto-generated method stub
-        memoryCache.put(photoToLoad.url, bitmap);
+        ImageSize size = getImageViewSize(photoToLoad.imageView);
+        Bitmap decodedBitmap = zoomImage(bitmap,size.width,size.height);
+        memoryCache.put(photoToLoad.url, decodedBitmap);
         if (imageViewReused(photoToLoad))
             return;
         handler.post(new BitmapDisplayerThread(bitmap, photoToLoad));

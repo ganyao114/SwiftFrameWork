@@ -7,7 +7,12 @@ import net.gy.SwiftFrameWork.Service.cache.config.PoolType;
  */
 public interface ICachePool <K,V>{
     public void init(PoolType type);
+    //回收缓存池
     public void recycle();
+    //销毁缓存池
+    public void destory();
+    //重复利用
+    public void obtain();
     public long getSize();
     public void compress(int FLAG);
     public ICachePool getParent();

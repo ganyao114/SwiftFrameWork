@@ -1,5 +1,7 @@
 package net.gy.SwiftFrameWork.IOC.Core.cache;
 
+import net.gy.SwiftFrameWork.Service.cache.entity.ICache;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -8,7 +10,7 @@ import java.util.Map;
 /**
  * Created by pc on 16/8/20.
  */
-public class FieldEntity {
+public class FieldEntity{
 
     private Field field;
 
