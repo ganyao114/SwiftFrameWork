@@ -13,5 +13,6 @@ import java.util.List;
 @Retention(RetentionPolicy.RUNTIME)
 @JsonBase(List.class)
 public @interface JsonSet {
-    String value() default "";
+    String name() default "";
+    String clazz();
 }
