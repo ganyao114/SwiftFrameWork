@@ -1,7 +1,6 @@
 package net.gy.SwiftFrameWork.MVVM.Annotations;
 
-import android.view.View;
-import android.widget.TextView;
+import android.support.annotation.IdRes;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,10 +10,8 @@ import java.lang.annotation.Target;
 /**
  * Created by pc on 16/8/29.
  */
-@Target(ElementType.ANNOTATION_TYPE)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface AnnoMvvmBase {
-    Class<? extends View> viewType() default TextView.class;
-    String setMethod() default "setText";
-    Class<?> dataType() default String.class;
+public @interface BindRecycleView {
+    @IdRes int[] value();
 }
