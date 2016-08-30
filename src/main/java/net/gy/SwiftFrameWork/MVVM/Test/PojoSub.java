@@ -8,4 +8,12 @@ import net.gy.SwiftFrameWork.MVVM.Annotations.JsonString;
 public class PojoSub {
     @JsonString
     private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

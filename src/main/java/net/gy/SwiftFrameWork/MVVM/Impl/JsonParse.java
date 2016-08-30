@@ -8,6 +8,8 @@ import net.gy.SwiftFrameWork.MVVM.Entity.JsonMem;
 import net.gy.SwiftFrameWork.MVVM.Entity.JsonObjType;
 import net.gy.SwiftFrameWork.MVVM.Entity.JsonTree;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.annotation.Annotation;
@@ -25,6 +27,7 @@ public class JsonParse {
         JsonMem headmem = new JsonMem();
         headmem.setJsontype(JsonObjType.HEAD);
         headmem.setType(clazz);
+        headmem.setKey(clazz.getName());
         establish(headmem);
         JsonTree jsonTree = new JsonTree();
         jsonTree.setTop(headmem);
@@ -51,7 +54,8 @@ public class JsonParse {
                     jsonMem.setJsontype(JsonObjType.ARRAY);
                     jsonMem.setField(field);
                     jsonMem.setType(set.clazz());
-                    establish(jsonMem);
+                    if (jsonMem.getType()!=String.class)
+                        establish(jsonMem);
                     childs.add(jsonMem);
                 }else if (type == JsonObject.class){
                     JsonObject jsonObject = (JsonObject) annotation;
@@ -81,6 +85,77 @@ public class JsonParse {
                     childs.add(jsonMem);
                 }
             }
+        }
+        if (childs.size()!=0)
+            mem.setChilds(childs);
+    }
+
+    public static <T> T getValue(JsonTree tree,String json){
+        Class clazz = tree.getTop().getType();
+        T t = null;
+        try {
+            t = (T) clazz.newInstance();
+            getValue(tree.getTop(),json,t);
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return t;
+    }
+
+    private static void getValue(JsonMem mem,String json,Object object) throws Exception {
+        Field field = mem.getField();
+        Class type = mem.getType();
+        List<JsonMem> childs = mem.getChilds();
+        switch (mem.getJsontype()){
+            case HEAD:
+                JSONObject headobj = new JSONObject(json);
+                if (childs!=null){
+                    for (JsonMem child:childs){
+                        String str = headobj.getString(child.getKey());
+                        getValue(child,str,object);
+                    }
+                }
+            case ELEMENT:
+                field.set(object,json);
+                break;
+            case OBJECT:
+                JSONObject jsonObject = new JSONObject(json);
+                Object valueobj = type.newInstance();
+                if (childs!=null){
+                    for (JsonMem child:childs){
+                        String str = jsonObject.getString(child.getKey());
+                        getValue(child,str,valueobj);
+                    }
+                }
+                field.set(object,valueobj);
+                break;
+            case ARRAY:
+                JSONArray array = new JSONArray(json);
+                if (array == null||array.length() == 0)
+                    break;
+                List list = new ArrayList();
+                if (type == String.class){
+                    for (int i = 0;i < array.length();i++){
+                        list.add(array.getString(i));
+                    }
+                }else {
+                    for (int i = 0;i < array.length();i++){
+                        Object arritem = type.newInstance();
+                        JSONObject subobj = array.getJSONObject(i);
+                        if (childs!=null){
+                            for (JsonMem child:childs){
+                                String str = subobj.getString(child.getKey());
+                                getValue(child,str,arritem);
+                            }
+                        }
+                        list.add(arritem);
+                    }
+                }
+                break;
         }
     }
 

@@ -3,6 +3,7 @@ package net.gy.SwiftFrameWork.MVVM.Test;
 import android.util.Log;
 
 
+import net.gy.SwiftFrameWork.MVVM.Impl.JsonParse;
 import net.gy.SwiftFrameWork.MVVM.ProxyHandler.DynamicHandler;
 
 import java.lang.reflect.Field;
@@ -25,6 +26,10 @@ public class Test {
 
     public void dosth(Object... pars){
         Log.e(pars[0].toString(),pars[1].toString());
+    }
+
+    public void getTree(){
+        JsonParse.establish(TestPojo.class);
     }
 
 }

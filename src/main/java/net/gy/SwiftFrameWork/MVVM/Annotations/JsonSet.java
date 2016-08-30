@@ -14,5 +14,5 @@ import java.util.List;
 @JsonBase(List.class)
 public @interface JsonSet {
     String name() default "";
-    Class clazz();
+    Class clazz() default String.class;
 }
