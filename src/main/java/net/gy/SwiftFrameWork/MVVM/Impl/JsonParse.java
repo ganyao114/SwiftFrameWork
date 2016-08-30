@@ -89,7 +89,6 @@ public class JsonParse {
         if (childs.size()!=0)
             mem.setChilds(childs);
     }
-
     public static <T> T getValue(JsonTree tree,String json){
         Class clazz = tree.getTop().getType();
         T t = null;

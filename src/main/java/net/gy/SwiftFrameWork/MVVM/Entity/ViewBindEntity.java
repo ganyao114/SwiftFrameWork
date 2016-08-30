@@ -17,14 +17,7 @@ public class ViewBindEntity {
     private Method bindMethod;
     private Field valuefield;
     private Class valuetype;
-
-    public int[] getViewid() {
-        return viewids;
-    }
-
-    public void setViewid(@IdRes int[] viewids) {
-        this.viewids = viewids;
-    }
+    private ViewType viewType;
 
     public Class<? extends View> getViewtype() {
         return viewtype;
@@ -57,5 +50,21 @@ public class ViewBindEntity {
 
     public void setValuetype(Class valuetype) {
         this.valuetype = valuetype;
+    }
+
+    public int[] getViewids() {
+        return viewids;
+    }
+
+    public void setViewids(int[] viewids) {
+        this.viewids = viewids;
+    }
+
+    public ViewType getViewType() {
+        return viewType;
+    }
+
+    public void setViewType(ViewType viewType) {
+        this.viewType = viewType;
     }
 }

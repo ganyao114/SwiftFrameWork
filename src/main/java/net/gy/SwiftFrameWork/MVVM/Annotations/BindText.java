@@ -17,5 +17,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @BindViewBase(viewType = TextView.class,methodName = "setText",dataType = CharSequence.class)
 public @interface BindText {
-    @IdRes int[] value();
+    int[] value();
 }

@@ -1,17 +1,24 @@
 package net.gy.SwiftFrameWork.MVVM.Test;
 
+import net.gy.SwiftFrameWork.MVVM.Annotations.BindObj;
+import net.gy.SwiftFrameWork.MVVM.Annotations.BindText;
 import net.gy.SwiftFrameWork.MVVM.Annotations.JsonObject;
+import net.gy.SwiftFrameWork.MVVM.Annotations.JsonOrm;
 import net.gy.SwiftFrameWork.MVVM.Annotations.JsonString;
+import net.gy.SwiftFrameWork.R;
 
 /**
  * Created by pc on 16/8/30.
  */
+@JsonOrm
 public class TestPojo {
 
+    @BindText(1)
     @JsonString
     private String name;
     @JsonString
     private String pass;
+    @BindObj
     @JsonObject
     private PojoSub obj;
 

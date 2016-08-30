@@ -9,17 +9,13 @@ import java.util.Map;
  */
 public class ViewBindControl {
 
-    private Map<Field,ViewBindEntity> bindmap;
+    private ViewBinderLevel root;
 
-    public void show(){
-
+    public ViewBinderLevel getRoot() {
+        return root;
     }
 
-    public Map<Field, ViewBindEntity> getBindmap() {
-        return bindmap;
-    }
-
-    public void setBindmap(Map<Field, ViewBindEntity> bindmap) {
-        this.bindmap = bindmap;
+    public void setRoot(ViewBinderLevel root) {
+        this.root = root;
     }
 }
