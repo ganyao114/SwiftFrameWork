@@ -119,6 +119,7 @@ public class JsonParse {
                         getValue(child,str,object);
                     }
                 }
+                break;
             case ELEMENT:
                 field.set(object,json);
                 break;
@@ -155,6 +156,7 @@ public class JsonParse {
                         list.add(arritem);
                     }
                 }
+                field.set(object,list);
                 break;
         }
     }
