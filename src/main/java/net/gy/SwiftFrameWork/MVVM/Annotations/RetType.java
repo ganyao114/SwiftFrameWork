@@ -1,18 +1,20 @@
 package net.gy.SwiftFrameWork.MVVM.Annotations;
 
+import net.gy.SwiftFrameWork.MVVM.Entity.HttpConnectMode;
+import net.gy.SwiftFrameWork.MVVM.Entity.HttpRunMode;
+import net.gy.SwiftFrameWork.MVVM.Interface.IFilter;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.List;
 
 /**
  * Created by pc on 16/8/29.
  */
-@Target(ElementType.FIELD)
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@JsonBase(List.class)
-public @interface JsonSet {
-    String name() default "";
-    Class clazz();
+@SrcMethodBase
+public @interface RetType {
+    Class value();
 }

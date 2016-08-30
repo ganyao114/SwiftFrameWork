@@ -20,6 +20,7 @@ import net.gy.SwiftFrameWork.Service.thread.pool.impl.MyWorkThreadQueue;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.concurrent.Future;
 
 /**
  * Created by pc on 16/5/14.
@@ -44,7 +45,7 @@ public class Invoker {
         mainHandler = new Handler(Looper.getMainLooper());
     }
 
-    public void invoke(Method method, Object object, Object... values){
+    public Future invoke(Method method, Object object, Object... values){
         RunContext runContext = method.getAnnotation(RunContext.class);
         RunContextType type;
         int delay = 0;
@@ -55,6 +56,7 @@ public class Invoker {
         Delay delayAnno = method.getAnnotation(Delay.class);
         if (delayAnno!=null)
             delay = delayAnno.value();
+        Future future = null;
         switch (type){
             case CurrentThread:
                 invoke_current_thread(method,object,delay,values);
@@ -72,7 +74,7 @@ public class Invoker {
                 invoke_main_loop(method,object,delay,values);
                 break;
             case Calculate:
-                invoke_calculate(method,object,delay,values);
+                future = invoke_calculate(method,object,delay,values);
                 break;
             case IO:
                 invoke_io(method,object,delay,values);
@@ -84,9 +86,10 @@ public class Invoker {
                 invoke_dynamic(method, object, values);
                 break;
         }
+        return future;
     }
 
-    private void invoke_dynamic(Method method, Object object, Object... values) {
+    private Future invoke_dynamic(Method method, Object object, Object... values) {
         RunContextType type = null;
         int delay = 0;
         try {
@@ -100,7 +103,8 @@ public class Invoker {
             e.printStackTrace();
         }
         if (type == null)
-            return;
+            return null;
+        Future future = null;
         switch (type){
             case CurrentThread:
                 invoke_current_thread(method,object,delay,values);
@@ -130,6 +134,7 @@ public class Invoker {
                 invoke_dynamic(method, object, values);
                 break;
         }
+        return future;
     }
 
     private void invoke_new_handler_thread(Method method, Object object,int delay,Object... values) {
@@ -149,10 +154,10 @@ public class Invoker {
         MySigleThreadQueue.AddTask(entity);
     }
 
-    private void invoke_calculate(Method method, Object object,int delay,Object... values) {
+    private Future invoke_calculate(Method method, Object object,int delay,Object... values) {
         ProxyEntity entity = new ProxyEntity(method,object,values);
         entity.setDelay(delay);
-        MyWorkThreadQueue.AddTask(entity);
+        return MyWorkThreadQueue.AddTask(entity);
     }
 
     private void invoke_new_thread(Method method, Object object,int delay,Object... values) {

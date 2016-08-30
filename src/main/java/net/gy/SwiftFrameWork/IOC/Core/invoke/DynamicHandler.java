@@ -34,7 +34,7 @@ public class DynamicHandler implements InvocationHandler {
             String methodName = method.getName();
             method = methodMap.get(methodName);
             if (method != null) {
-                return method.invoke(handler, args);
+                return method.invoke(handler,args);
             }
         }
         return null;

@@ -19,6 +19,7 @@ import net.gy.SwiftFrameWork.Reactive.utils.AnnotationUtils;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.concurrent.Future;
 
 /**
  * Created by pc on 16/5/13.
@@ -254,9 +255,10 @@ public class Publisher<T> implements IPublisher<T>{
     }
 
     @Override
-    public IPublisher<T> post() {
+    public Future post() {
         link();
         onPublisher.call(changeHead);
-        return this;
+        OnPublisherProxy proxy = (OnPublisherProxy) onPublisher;
+        return proxy.getFuture();
     }
 }

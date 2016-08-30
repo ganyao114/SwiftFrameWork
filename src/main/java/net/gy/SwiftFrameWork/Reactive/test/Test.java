@@ -1,5 +1,6 @@
 package net.gy.SwiftFrameWork.Reactive.test;
 
+import net.gy.SwiftFrameWork.Reactive.OnFilter;
 import net.gy.SwiftFrameWork.Reactive.OnObserver;
 import net.gy.SwiftFrameWork.Reactive.OnPublisher;
 import net.gy.SwiftFrameWork.Reactive.annotation.RunContext;
@@ -17,6 +18,12 @@ public class Test {
                      @RunContext(RunContextType.Calculate)
                      @Override
                      public void call(OnObserver<String> observer) {
+                     }
+                 })
+                 .filter(new OnFilter<String>() {
+                     @Override
+                     public Boolean call(String s) {
+                         return null;
                      }
                  })
                  .with(new String[]{})

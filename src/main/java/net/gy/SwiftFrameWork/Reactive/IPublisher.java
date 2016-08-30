@@ -8,6 +8,7 @@ import net.gy.SwiftFrameWork.Reactive.entity.actions.Change;
 import net.gy.SwiftFrameWork.Reactive.entity.actions.Func1;
 
 import java.util.Iterator;
+import java.util.concurrent.Future;
 
 /**
  * Created by pc on 16/5/13.
@@ -35,5 +36,5 @@ public interface IPublisher<T> {
     public IPublisher<T> reMap(Func1<T,IPublisher<T>> publisher);
     public IPublisher<T> link();
     public IPublisher<T> clear();
-    public IPublisher<T> post();
+    public Future post();
 }
