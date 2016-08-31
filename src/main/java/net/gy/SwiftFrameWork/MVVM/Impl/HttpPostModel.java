@@ -56,7 +56,7 @@ public class HttpPostModel extends BaseHttpModel{
         if (parLocal.get().getEntity() != null){
             post.setEntity(parLocal.get().getEntity());
         }else if (parLocal.get().getPars() != null) {
-            for (Map.Entry<String, String> entity : parLocal.get().getHeaders().entrySet())
+            for (Map.Entry<String, String> entity : parLocal.get().getPars().entrySet())
                 parameters.add(new BasicNameValuePair(entity.getKey(), entity.getValue()));
         }
         post.setEntity(new UrlEncodedFormEntity(parameters, HTTP.UTF_8));
