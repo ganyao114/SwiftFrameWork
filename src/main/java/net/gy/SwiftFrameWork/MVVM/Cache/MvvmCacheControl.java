@@ -29,11 +29,11 @@ public class MvvmCacheControl {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Log.e("gy","cache_start");
+                Log.v("gy","cache_start");
                 for (Class inf:infs){
                     getCache(inf);
                 }
-                Log.e("gy","cache_end");
+                Log.v("gy","cache_end");
             }
         }).start();
     }

@@ -16,6 +16,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @BindViewBase(viewType = TextView.class,methodName = "setText",dataType = CharSequence.class)
-public @interface BindText {
+public @interface BindTextView {
     int[] value();
 }

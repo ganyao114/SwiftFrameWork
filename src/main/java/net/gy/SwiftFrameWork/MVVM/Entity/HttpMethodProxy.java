@@ -9,6 +9,7 @@ import android.view.View;
 import net.gy.SwiftFrameWork.MVVM.Annotations.HttpSrcMethod;
 import net.gy.SwiftFrameWork.MVVM.Cache.MethodCache;
 import net.gy.SwiftFrameWork.MVVM.Cache.MvvmCache;
+import net.gy.SwiftFrameWork.MVVM.Impl.HttpGetModel;
 import net.gy.SwiftFrameWork.MVVM.Impl.HttpPostModel;
 import net.gy.SwiftFrameWork.MVVM.Impl.HttpTemplet;
 import net.gy.SwiftFrameWork.MVVM.Impl.ViewDisplayer;
@@ -61,6 +62,7 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
                     httpModel = new HttpPostModel();
                     break;
                 case Get:
+                    httpModel = new HttpGetModel();
                     break;
             }
 
