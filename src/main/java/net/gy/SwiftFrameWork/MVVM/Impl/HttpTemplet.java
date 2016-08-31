@@ -1,5 +1,7 @@
 package net.gy.SwiftFrameWork.MVVM.Impl;
 
+import android.util.Log;
+
 import net.gy.SwiftFrameWork.MVVM.Exception.HttpServiceException;
 import net.gy.SwiftFrameWork.MVVM.Interface.ICallBack;
 import net.gy.SwiftFrameWork.MVVM.Interface.ICallBackInner;
@@ -50,6 +52,7 @@ public class HttpTemplet extends HttpThreadTemplet implements IThreadCallback{
 
     @Override
     protected void OnRun() throws Exception {
+        Log.e("gy","成功!来自"+invoker.getName());
         Object object = httpModel.dohttp();
         if (object == null)
             throw new HttpServiceException("返回为空");

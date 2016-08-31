@@ -8,6 +8,7 @@ import net.gy.SwiftFrameWork.MVVM.Interface.ICallBack;
 import net.gy.SwiftFrameWork.MVVM.ProxyHandler.DynamicHandler;
 import net.gy.SwiftFrameWork.MVVM.Test.ILogin;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,50 +34,42 @@ public class HttpProxyFactory {
         return new ExtCall(inf);
     }
 
-    public <T> T establish(Class<?> inf,ICallBack callBack,Map<String,ICallBack> callBacks){
+    public <T> T establish(Class<?> inf,Map<String,ICallBack> callBacks){
 
         MvvmCache cache = MvvmCacheControl.getCache(inf);
 
-        for (MethodCache methodCache:cache.getMethodCaches()){
+        Method proxymethod = MvvmCache.getProxyMethod(HttpMethodProxy.class);
 
-        }
+        if (cache == null)
+            return null;
 
-
-        HttpMethodProxy proxy = new HttpMethodProxy();
+        HttpMethodProxy proxy = new HttpMethodProxy(cache.getMethodCaches(),callBacks);
         DynamicHandler handler = new DynamicHandler(proxy);
+        for (Map.Entry<Method,MethodCache> methodCache:cache.getMethodCaches().entrySet()){
+            handler.addMethod(methodCache.getKey().getName(), proxymethod);
+        }
 //        handler.addMethod("login", methods[0]);
         T bussnessproxy = (T) Proxy.newProxyInstance(inf.getClassLoader(), new Class<?>[]{inf}, handler);
         return bussnessproxy;
     }
 
-    static class ExtCall{
+    public static class ExtCall{
 
         private Class inf;
 
-        private ICallBack callBack;
-
-        private Map<String,ICallBack> callBacks;
+        private Map<String,ICallBack> callBacks =  new HashMap<>();;
 
         public ExtCall(Class inf) {
             this.inf = inf;
         }
 
         public ExtCall addCallBack(String methodName,ICallBack callBack){
-            if (callBacks == null)
-                callBacks = new HashMap<>();
             callBacks.put(methodName,
                     callBack);
             return this;
         }
-
-        public ExtCall setCallBack(ICallBack callBack){
-            callBacks = null;
-            this.callBack = callBack;
-            return this;
-        }
-
-        public void establish(){
-            getInstance().establish(inf,callBack,callBacks);
+        public <T> T establish(){
+            return (T) getInstance().establish(inf,callBacks);
         }
 
     }

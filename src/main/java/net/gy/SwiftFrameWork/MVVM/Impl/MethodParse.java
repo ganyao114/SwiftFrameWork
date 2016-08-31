@@ -18,15 +18,17 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by pc on 16/8/30.
  */
 public class MethodParse {
-    public static List<MethodCache> getMethodCaches(Class clazz){
+    public static Map<Method,MethodCache> getMethodCaches(Class clazz){
         Method[] methods = clazz.getDeclaredMethods();
-        List<MethodCache> list = new ArrayList<>();
+        Map<Method,MethodCache>  list = new HashMap<>();
         for (Method method:methods){
             HttpSrcMethod anno = method.getAnnotation(HttpSrcMethod.class);
             if (anno == null)
@@ -45,7 +47,7 @@ public class MethodParse {
                     binderEntity.setPars(getPars(method));
                     mcache.setBinderEntity(binderEntity);
                     mcache.setMethod(method);
-                    list.add(mcache);
+                    list.put(method,mcache);
                 }
             }
         }
