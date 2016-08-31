@@ -7,6 +7,7 @@ import net.gy.SwiftFrameWork.MVVM.Entity.JsonAry;
 import net.gy.SwiftFrameWork.MVVM.Entity.JsonMem;
 import net.gy.SwiftFrameWork.MVVM.Entity.JsonObjType;
 import net.gy.SwiftFrameWork.MVVM.Entity.JsonTree;
+import net.gy.SwiftFrameWork.MVVM.Interface.IHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -94,6 +95,8 @@ public class JsonParse {
         T t = null;
         t = (T) clazz.newInstance();
         getValue(tree.getTop(),json,t);
+        if (t instanceof IHandler)
+            ((IHandler)t).handler();
         return t;
     }
 
