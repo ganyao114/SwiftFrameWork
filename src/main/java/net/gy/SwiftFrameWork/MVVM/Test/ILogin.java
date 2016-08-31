@@ -8,5 +8,5 @@ import net.gy.SwiftFrameWork.MVVM.Annotations.Param;
  */
 public interface ILogin {
     @HttpSrcMethod()
-    public TestPojo login(@Param("name") String name,@Param("pass") String pass);
+    public TestPojo login(@Param("name") String name,@Param("pass") String pass,@Param("par3") String par3);
 }

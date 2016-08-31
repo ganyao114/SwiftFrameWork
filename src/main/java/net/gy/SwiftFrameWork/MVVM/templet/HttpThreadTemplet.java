@@ -7,6 +7,7 @@ import android.os.Message;
 
 import net.gy.SwiftFrameWork.Exception.model.net.http.HttpServiceException;
 import net.gy.SwiftFrameWork.MVVM.Interface.ICallBack;
+import net.gy.SwiftFrameWork.MVVM.Interface.ICallBackInner;
 import net.gy.SwiftFrameWork.MVVM.templet.configs.HttpTheadConfigBean;
 import net.gy.SwiftFrameWork.Model.net.http.IHttpDealCallBack;
 import net.gy.SwiftFrameWork.Model.net.http.IHttpService;
@@ -15,6 +16,7 @@ import net.gy.SwiftFrameWork.Service.thread.IThreadCallback;
 
 import org.apache.http.conn.ConnectTimeoutException;
 
+import java.lang.reflect.Method;
 import java.net.SocketTimeoutException;
 
 @SuppressWarnings("deprecation")
@@ -24,24 +26,27 @@ public abstract class HttpThreadTemplet implements Runnable {
     protected int tickTime = 0;
     protected HttpTheadConfigBean configBean;
     protected IThreadCallback threadCallback;
-    protected ICallBack callBack;
+    protected ICallBackInner callBack;
+    protected Method invoker;
 
-    public HttpThreadTemplet(ICallBack callBack) {
+    public HttpThreadTemplet(ICallBackInner callBack,Method invoker) {
         // TODO Auto-generated constructor stub
         this.callBack = callBack;
         this.configBean = HttpTheadConfigBean.Default();
         isLoop = configBean.isLoop;
         tickTime = configBean.tickTime;
+        this.invoker = invoker;
     }
 
 
 
-    public HttpThreadTemplet(ICallBack callBack,HttpTheadConfigBean configBean) {
+    public HttpThreadTemplet(ICallBackInner callBack,HttpTheadConfigBean configBean,Method invoker) {
         // TODO Auto-generated constructor stub
         this.callBack = callBack;
         this.configBean = configBean;
         isLoop = configBean.isLoop;
         tickTime = configBean.tickTime;
+        this.invoker = invoker;
     }
 
     @SuppressWarnings("static-access")
@@ -71,16 +76,16 @@ public abstract class HttpThreadTemplet implements Runnable {
         } catch (HttpServiceException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            callBack.onFailed(e);
+            callBack.onFailed(invoker,e);
         } catch (ConnectTimeoutException e) {
             e.printStackTrace();
-            callBack.onFailed(e);
+            callBack.onFailed(invoker,e);
         } catch (SocketTimeoutException e) {
             e.printStackTrace();
-            callBack.onFailed(e);
+            callBack.onFailed(invoker,e);
         } catch (Exception e) {
             e.printStackTrace();
-            callBack.onFailed(e);
+            callBack.onFailed(invoker,e);
         }finally {
             onFinally();
         }
@@ -96,11 +101,11 @@ public abstract class HttpThreadTemplet implements Runnable {
 
     }
 
-    public ICallBack getCallBack() {
+    public ICallBackInner getCallBack() {
         return callBack;
     }
 
-    public void setCallBack(ICallBack callBack) {
+    public void setCallBack(ICallBackInner callBack) {
         this.callBack = callBack;
     }
 

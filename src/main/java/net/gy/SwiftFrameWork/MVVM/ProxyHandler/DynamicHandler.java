@@ -31,10 +31,11 @@ public class DynamicHandler implements InvocationHandler {
             throws Throwable {
         Object handler = handlerRef.get();
         if (handler != null) {
+            Method invoker = method;
             String methodName = method.getName();
             method = methodMap.get(methodName);
             if (method != null) {
-                return method.invoke(handler,new Object[]{args});
+                return method.invoke(handler,invoker,args);
             }
         }
         return null;

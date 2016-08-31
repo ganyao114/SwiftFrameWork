@@ -31,11 +31,12 @@ public class Test {
         handler.addMethod("login", methods[0]);
         Object bussnessproxy = Proxy.newProxyInstance(ILogin.class.getClassLoader(), new Class<?>[]{ILogin.class}, handler);
         ILogin login = (ILogin) bussnessproxy;
-        login.login("gy","login");
+        login.login("gy","login","par3");
     }
 
-    public void dosth(Object... pars){
-        Log.e(pars[0].toString(),pars[1].toString());
+    public Object dosth(Method invoker,Object[] pars){
+        Log.e(pars[0].toString(),invoker.getName()+pars[1].toString()+pars[2].toString());
+        return null;
     }
 
     public JsonTree getTree(){

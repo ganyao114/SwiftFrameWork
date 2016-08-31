@@ -2,11 +2,14 @@ package net.gy.SwiftFrameWork.MVVM.Impl;
 
 import net.gy.SwiftFrameWork.MVVM.Exception.HttpServiceException;
 import net.gy.SwiftFrameWork.MVVM.Interface.ICallBack;
+import net.gy.SwiftFrameWork.MVVM.Interface.ICallBackInner;
 import net.gy.SwiftFrameWork.MVVM.Interface.IFilter;
 import net.gy.SwiftFrameWork.MVVM.Interface.IHttpModel;
 import net.gy.SwiftFrameWork.MVVM.templet.HttpThreadTemplet;
 import net.gy.SwiftFrameWork.MVVM.templet.configs.HttpTheadConfigBean;
 import net.gy.SwiftFrameWork.Service.thread.IThreadCallback;
+
+import java.lang.reflect.Method;
 
 /**
  * Created by pc on 16/8/30.
@@ -17,14 +20,14 @@ public class HttpTemplet extends HttpThreadTemplet implements IThreadCallback{
     private IFilter[] filters;
 
 
-    public HttpTemplet(ICallBack callBack,IHttpModel httpModel) {
-        super(callBack);
+    public HttpTemplet(ICallBackInner callBack, IHttpModel httpModel, Method invoker) {
+        super(callBack,invoker);
         this.httpModel = httpModel;
         this.threadCallback = this;
     }
 
-    public HttpTemplet(ICallBack callBack, HttpTheadConfigBean configBean,IHttpModel httpModel) {
-        super(callBack, configBean);
+    public HttpTemplet(ICallBackInner callBack, HttpTheadConfigBean configBean,IHttpModel httpModel,Method invoker) {
+        super(callBack, configBean,invoker);
         this.httpModel = httpModel;
         this.threadCallback = this;
     }
@@ -56,7 +59,7 @@ public class HttpTemplet extends HttpThreadTemplet implements IThreadCallback{
                 object = filter.filter(object);
             }
         }
-        callBack.onSuccess(object);
+        callBack.onSuccess(invoker,object);
     }
 
     @Override

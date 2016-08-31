@@ -5,7 +5,7 @@ import net.gy.SwiftFrameWork.MVVM.Entity.ParField;
 /**
  * Created by pc on 16/8/30.
  */
-public class HttpModel extends BaseHttpModel{
+public class HttpPostModel extends BaseHttpModel{
 
     @Override
     public void setUrl(String url) {
