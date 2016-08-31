@@ -89,19 +89,11 @@ public class JsonParse {
         if (childs.size()!=0)
             mem.setChilds(childs);
     }
-    public static <T> T getValue(JsonTree tree,String json){
+    public static <T> T getValue(JsonTree tree,String json) throws Exception{
         Class clazz = tree.getTop().getType();
         T t = null;
-        try {
-            t = (T) clazz.newInstance();
-            getValue(tree.getTop(),json,t);
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        t = (T) clazz.newInstance();
+        getValue(tree.getTop(),json,t);
         return t;
     }
 

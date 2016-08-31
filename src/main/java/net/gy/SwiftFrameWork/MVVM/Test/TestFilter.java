@@ -1,5 +1,6 @@
 package net.gy.SwiftFrameWork.MVVM.Test;
 
+import net.gy.SwiftFrameWork.MVVM.Exception.HttpServiceException;
 import net.gy.SwiftFrameWork.MVVM.Interface.IFilter;
 
 /**
@@ -7,7 +8,7 @@ import net.gy.SwiftFrameWork.MVVM.Interface.IFilter;
  */
 public class TestFilter implements IFilter<String,String>{
     @Override
-    public String filter(String s) {
-        return null;
+    public String filter(String s) throws Exception {
+        throw new HttpServiceException("");
     }
 }

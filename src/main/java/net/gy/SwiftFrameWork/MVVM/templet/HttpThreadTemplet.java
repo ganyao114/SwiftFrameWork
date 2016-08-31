@@ -1,17 +1,8 @@
 package net.gy.SwiftFrameWork.MVVM.templet;
 
-
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-
-import net.gy.SwiftFrameWork.Exception.model.net.http.HttpServiceException;
-import net.gy.SwiftFrameWork.MVVM.Interface.ICallBack;
+import net.gy.SwiftFrameWork.MVVM.Exception.HttpServiceException;
 import net.gy.SwiftFrameWork.MVVM.Interface.ICallBackInner;
 import net.gy.SwiftFrameWork.MVVM.templet.configs.HttpTheadConfigBean;
-import net.gy.SwiftFrameWork.Model.net.http.IHttpDealCallBack;
-import net.gy.SwiftFrameWork.Model.net.http.IHttpService;
-import net.gy.SwiftFrameWork.Model.net.http.impl.MyHttpService;
 import net.gy.SwiftFrameWork.Service.thread.IThreadCallback;
 
 import org.apache.http.conn.ConnectTimeoutException;
@@ -74,7 +65,6 @@ public abstract class HttpThreadTemplet implements Runnable {
         try {
             OnRun();
         } catch (HttpServiceException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             callBack.onFailed(invoker,e);
         } catch (ConnectTimeoutException e) {

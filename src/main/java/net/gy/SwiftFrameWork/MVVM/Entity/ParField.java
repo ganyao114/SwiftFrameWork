@@ -1,5 +1,7 @@
 package net.gy.SwiftFrameWork.MVVM.Entity;
 
+import org.apache.http.HttpEntity;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +13,7 @@ public class ParField {
     private String url;
     private Map<String,String> pars;
     private Map<String,String> headers;
+    private HttpEntity entity;
 
     public String getUrl() {
         return url;
@@ -46,5 +49,13 @@ public class ParField {
 
     public void setHeaders(Map<String, String> headers) {
         this.headers = headers;
+    }
+
+    public HttpEntity getEntity() {
+        return entity;
+    }
+
+    public void setEntity(HttpEntity entity) {
+        this.entity = entity;
     }
 }

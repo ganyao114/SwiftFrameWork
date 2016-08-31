@@ -7,6 +7,6 @@ public interface IHttpModel<T> {
     public void setUrl(String url);
     public void addPar(String key,String value);
     public void addHeader(String key,String value);
-    public T dohttp();
+    public T dohttp() throws Exception;
     public void destory();
 }

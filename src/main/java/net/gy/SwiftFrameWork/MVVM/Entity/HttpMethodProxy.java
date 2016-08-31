@@ -2,13 +2,16 @@ package net.gy.SwiftFrameWork.MVVM.Entity;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import net.gy.SwiftFrameWork.MVVM.Annotations.HttpSrcMethod;
 import net.gy.SwiftFrameWork.MVVM.Cache.MethodCache;
+import net.gy.SwiftFrameWork.MVVM.Cache.MvvmCache;
 import net.gy.SwiftFrameWork.MVVM.Impl.HttpPostModel;
 import net.gy.SwiftFrameWork.MVVM.Impl.HttpTemplet;
 import net.gy.SwiftFrameWork.MVVM.Interface.ICallBack;
 import net.gy.SwiftFrameWork.MVVM.Interface.ICallBackInner;
+import net.gy.SwiftFrameWork.MVVM.Interface.IFilter;
 import net.gy.SwiftFrameWork.MVVM.Interface.IHttpModel;
 import net.gy.SwiftFrameWork.MVVM.Interface.IMethodProxy;
 import net.gy.SwiftFrameWork.Model.entity.Entry;
@@ -16,7 +19,9 @@ import net.gy.SwiftFrameWork.Model.net.http.IHttpDealCallBack;
 import net.gy.SwiftFrameWork.Service.thread.pool.impl.MyWorkThreadQueue;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,11 +58,29 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
                 case Get:
                     break;
             }
-            String url = control.url();
-            if (!url.equals(""))
-                httpModel.setUrl(url);
+
+            Class<? extends IFilter>[] filters = control.filters();
+            List<IFilter> filtersImpls = null;
+            if (filters.length > 0&&filters[0]!=IFilter.class){
+                filtersImpls = new ArrayList<>();
+                for (Class<? extends IFilter> ifilter:filters) {
+                    IFilter filterImpl = MvvmCache.getFilter(ifilter);
+                    filtersImpls.add(filterImpl);
+                }
+            }
+
 
             HttpTemplet httpTemplet = new HttpTemplet(this, httpModel,invoker);
+
+            String url = control.url();
+            if (!url.equals(""))
+                httpTemplet.setDefaultUrl(url);
+
+            httpTemplet.setFilters(filtersImpls);
+
+            httpTemplet.setBinderEntity(binderEntity);
+
+            httpTemplet.setJsonTree(binderEntityEntry.getValue().getRet().getJsonTree());
 
             httpTemplets.put(invoker,httpTemplet);
         }
@@ -72,21 +95,7 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
         if (pars.length != binderEntity.getPars().length)
             throw new IllegalArgumentException("输入参数不匹配");
         //参数初始化
-        for (int i = 0;i < pars.length ; i++){
-            Entry<ParType,String> par = binderEntity.getPars()[i];
-            String parvalue = pars[i].toString();
-            switch (par.getKey()){
-                case URL:
-                    httpModel.setUrl(parvalue);
-                    break;
-                case PAR:
-                    httpModel.addPar(par.getValue(),parvalue);
-                    break;
-                case HEADER:
-                    httpModel.addHeader(par.getValue(),parvalue);
-                    break;
-            }
-        }
+        httpTemplet.setPars(pars);
         if (binderEntity.getControl().runMode() == HttpRunMode.Sync){
             httpTemplet.run();
             return;
@@ -107,21 +116,7 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
         if (pars.length != binderEntity.getPars().length)
             throw new IllegalArgumentException("输入参数不匹配");
         //参数初始化
-        for (int i = 0; i < pars.length; i++) {
-            Entry<ParType, String> par = binderEntity.getPars()[i];
-            String parvalue = pars[i].toString();
-            switch (par.getKey()) {
-                case URL:
-                    httpModel.setUrl(parvalue);
-                    break;
-                case PAR:
-                    httpModel.addPar(par.getValue(), parvalue);
-                    break;
-                case HEADER:
-                    httpModel.addHeader(par.getValue(), parvalue);
-                    break;
-            }
-        }
+        httpTemplet.setPars(pars);
 
         if (binderEntity.getControl().runMode() == HttpRunMode.Sync){
             httpTemplet.run();
@@ -158,6 +153,7 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
+
             }
         });
     }
@@ -169,7 +165,7 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
         final ICallBack callBack = callBacks.get(invoker.getName());
         if (binderEntity.getControl().runMode() == HttpRunMode.Sync) {
             if (callBack != null)
-                callBack.onSuccess(o);
+                callBack.onFailed(o);
         }else {
             if (callBack != null)
                 mainHandler.post(new Runnable() {
