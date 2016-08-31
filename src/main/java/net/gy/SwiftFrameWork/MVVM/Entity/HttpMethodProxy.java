@@ -1,14 +1,17 @@
 package net.gy.SwiftFrameWork.MVVM.Entity;
 
+import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
 
 import net.gy.SwiftFrameWork.MVVM.Annotations.HttpSrcMethod;
 import net.gy.SwiftFrameWork.MVVM.Cache.MethodCache;
 import net.gy.SwiftFrameWork.MVVM.Cache.MvvmCache;
 import net.gy.SwiftFrameWork.MVVM.Impl.HttpPostModel;
 import net.gy.SwiftFrameWork.MVVM.Impl.HttpTemplet;
+import net.gy.SwiftFrameWork.MVVM.Impl.ViewDisplayer;
 import net.gy.SwiftFrameWork.MVVM.Interface.ICallBack;
 import net.gy.SwiftFrameWork.MVVM.Interface.ICallBackInner;
 import net.gy.SwiftFrameWork.MVVM.Interface.IFilter;
@@ -18,6 +21,7 @@ import net.gy.SwiftFrameWork.Model.entity.Entry;
 import net.gy.SwiftFrameWork.Model.net.http.IHttpDealCallBack;
 import net.gy.SwiftFrameWork.Service.thread.pool.impl.MyWorkThreadQueue;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +41,7 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
     private Map<String,ICallBack> callBacks;
     private Handler mainHandler;
     private Map<Method,Object> reses = new HashMap<>();
+    private Map<String,WeakReference<View>> viewContentRef;
 
     public HttpMethodProxy(Map<Method,MethodCache> methodCaches,Map<String,ICallBack> callBacks) {
         this.methodCaches = methodCaches;
@@ -149,11 +154,20 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
         }
     }
 
-    private void show(Method invoker,Object o) {
+    private void show(final Method invoker, final Object o) {
+        if (viewContentRef.get(invoker.getName()) == null)
+            return;
+        final View content = viewContentRef.get(invoker.getName()).get();
+        if (content == null)
+            return;
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
-
+                try {
+                    ViewDisplayer.show(methodCaches.get(invoker).getRet().getViewBindControl().getRoot(),o,content);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -175,5 +189,9 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
                     }
                 });
         }
+    }
+
+    public void setViewContentRef(Map<String, WeakReference<View>> viewContentRef) {
+        this.viewContentRef = viewContentRef;
     }
 }

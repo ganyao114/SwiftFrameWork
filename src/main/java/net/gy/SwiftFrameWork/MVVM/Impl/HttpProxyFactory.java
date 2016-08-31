@@ -1,5 +1,8 @@
 package net.gy.SwiftFrameWork.MVVM.Impl;
 
+import android.app.Activity;
+import android.view.View;
+
 import net.gy.SwiftFrameWork.MVVM.Cache.MethodCache;
 import net.gy.SwiftFrameWork.MVVM.Cache.MvvmCache;
 import net.gy.SwiftFrameWork.MVVM.Cache.MvvmCacheControl;
@@ -8,6 +11,7 @@ import net.gy.SwiftFrameWork.MVVM.Interface.ICallBack;
 import net.gy.SwiftFrameWork.MVVM.ProxyHandler.DynamicHandler;
 import net.gy.SwiftFrameWork.MVVM.Test.ILogin;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
@@ -34,7 +38,7 @@ public class HttpProxyFactory {
         return new ExtCall(inf);
     }
 
-    public <T> T establish(Class<?> inf,Map<String,ICallBack> callBacks){
+    public <T> T establish(Class<?> inf,Map<String,ICallBack> callBacks,Map<String,WeakReference<View>> viewContentRef){
 
         MvvmCache cache = MvvmCacheControl.getCache(inf);
 
@@ -44,6 +48,9 @@ public class HttpProxyFactory {
             return null;
 
         HttpMethodProxy proxy = new HttpMethodProxy(cache.getMethodCaches(),callBacks);
+
+        proxy.setViewContentRef(viewContentRef);
+
         DynamicHandler handler = new DynamicHandler(proxy);
         for (Map.Entry<Method,MethodCache> methodCache:cache.getMethodCaches().entrySet()){
             handler.addMethod(methodCache.getKey().getName(), proxymethod);
@@ -57,7 +64,9 @@ public class HttpProxyFactory {
 
         private Class inf;
 
-        private Map<String,ICallBack> callBacks =  new HashMap<>();;
+        private Map<String,ICallBack> callBacks =  new HashMap<>();
+
+        private Map<String,WeakReference<View>> viewContentRef = new HashMap<>();
 
         public ExtCall(Class inf) {
             this.inf = inf;
@@ -68,8 +77,19 @@ public class HttpProxyFactory {
                     callBack);
             return this;
         }
+
+        public ExtCall addViewContent(String methodName,View view){
+            viewContentRef.put(methodName,new WeakReference<View>(view));
+            return this;
+        }
+
+        public ExtCall addViewContent(String methodName,Activity activity){
+            View view = activity.getWindow().getDecorView();
+            return addViewContent(methodName, view);
+        }
+
         public <T> T establish(){
-            return (T) getInstance().establish(inf,callBacks);
+            return (T) getInstance().establish(inf,callBacks,viewContentRef);
         }
 
     }
