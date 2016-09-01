@@ -9,7 +9,6 @@ import net.gy.SwiftFrameWork.MVVM.Cache.MvvmCacheControl;
 import net.gy.SwiftFrameWork.MVVM.Entity.HttpMethodProxy;
 import net.gy.SwiftFrameWork.MVVM.Interface.ICallBack;
 import net.gy.SwiftFrameWork.MVVM.ProxyHandler.DynamicHandler;
-import net.gy.SwiftFrameWork.MVVM.Test.ILogin;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
@@ -38,7 +37,7 @@ public class HttpProxyFactory {
         return new ExtCall(inf);
     }
 
-    public <T> T establish(Class<?> inf,Map<String,ICallBack> callBacks,Map<String,WeakReference<View>> viewContentRef){
+    public <T> T establish(Class<?> inf, Map<String, ICallBack> callBacks, Map<String, WeakReference<View>> viewContentRef, ICallBack callBack, WeakReference<View> viewWeakReference){
 
         MvvmCache cache = MvvmCacheControl.getCache(inf);
 
@@ -50,6 +49,11 @@ public class HttpProxyFactory {
         HttpMethodProxy proxy = new HttpMethodProxy(cache.getMethodCaches(),callBacks);
 
         proxy.setViewContentRef(viewContentRef);
+
+        if (callBack != null)
+            proxy.setSigleCallback(callBack);
+        if (viewWeakReference != null)
+            proxy.setViewsingle(viewWeakReference);
 
         DynamicHandler handler = new DynamicHandler(proxy);
         for (Map.Entry<Method,MethodCache> methodCache:cache.getMethodCaches().entrySet()){
@@ -66,10 +70,38 @@ public class HttpProxyFactory {
 
         private Map<String,ICallBack> callBacks =  new HashMap<>();
 
-        private Map<String,WeakReference<View>> viewContentRef = new HashMap<>();
+        private Map<String,WeakReference<View>> viewContentRefs = new HashMap<>();
+
+        private ICallBack callBack;
+
+        private WeakReference<View> viewWeakReference;
 
         public ExtCall(Class inf) {
             this.inf = inf;
+        }
+
+        public ExtCall setCallBack(ICallBack callBack){
+            if (callBack == null)
+                return this;
+            callBacks = null;
+            this.callBack = callBack;
+            return this;
+        }
+
+        public ExtCall setViewContent(Activity activity){
+            if (activity == null)
+                return this;
+            viewContentRefs = null;
+            this.viewWeakReference = new WeakReference<View>(activity.getWindow().getDecorView());
+            return this;
+        }
+
+        public ExtCall setViewContent(View view){
+            if (view == null)
+                return this;
+            viewContentRefs = null;
+            this.viewWeakReference = new WeakReference<View>(view);
+            return this;
         }
 
         public ExtCall addCallBack(String methodName,ICallBack callBack){
@@ -79,7 +111,7 @@ public class HttpProxyFactory {
         }
 
         public ExtCall addViewContent(String methodName,View view){
-            viewContentRef.put(methodName,new WeakReference<View>(view));
+            viewContentRefs.put(methodName,new WeakReference<View>(view));
             return this;
         }
 
@@ -89,7 +121,7 @@ public class HttpProxyFactory {
         }
 
         public <T> T establish(){
-            return (T) getInstance().establish(inf,callBacks,viewContentRef);
+            return (T) getInstance().establish(inf,callBacks,viewContentRefs,callBack,viewWeakReference);
         }
 
     }

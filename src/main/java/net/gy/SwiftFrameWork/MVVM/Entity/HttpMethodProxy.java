@@ -1,9 +1,7 @@
 package net.gy.SwiftFrameWork.MVVM.Entity;
 
-import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 
 import net.gy.SwiftFrameWork.MVVM.Annotations.HttpSrcMethod;
@@ -18,8 +16,6 @@ import net.gy.SwiftFrameWork.MVVM.Interface.ICallBackInner;
 import net.gy.SwiftFrameWork.MVVM.Interface.IFilter;
 import net.gy.SwiftFrameWork.MVVM.Interface.IHttpModel;
 import net.gy.SwiftFrameWork.MVVM.Interface.IMethodProxy;
-import net.gy.SwiftFrameWork.Model.entity.Entry;
-import net.gy.SwiftFrameWork.Model.net.http.IHttpDealCallBack;
 import net.gy.SwiftFrameWork.Service.thread.pool.impl.MyWorkThreadQueue;
 
 import java.lang.ref.WeakReference;
@@ -43,6 +39,9 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
     private Handler mainHandler;
     private Map<Method,Object> reses = new HashMap<>();
     private Map<String,WeakReference<View>> viewContentRef;
+
+    private WeakReference<View> viewsingle;
+    private ICallBack sigleCallback;
 
     public HttpMethodProxy(Map<Method,MethodCache> methodCaches,Map<String,ICallBack> callBacks) {
         this.methodCaches = methodCaches;
@@ -138,7 +137,11 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
     @Override
     public void onSuccess(Method invoker,final Object o) {
         HttpBinderEntity binderEntity = methodCaches.get(invoker).getBinderEntity();
-        final ICallBack callBack = callBacks.get(invoker.getName());
+        final ICallBack callBack;
+        if (sigleCallback == null)
+            callBack = callBacks.get(invoker.getName());
+        else
+            callBack = sigleCallback;
         if (binderEntity.getControl().runMode() == HttpRunMode.Sync){
             reses.put(invoker,o);
             if (callBack != null)
@@ -157,9 +160,12 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
     }
 
     private void show(final Method invoker, final Object o) {
-        if (viewContentRef.get(invoker.getName()) == null)
-            return;
-        final View content = viewContentRef.get(invoker.getName()).get();
+        final View content;
+        if (viewsingle == null) {
+            content = viewContentRef.get(invoker.getName()).get();
+        }
+        else
+            content = viewsingle.get();
         if (content == null)
             return;
         mainHandler.post(new Runnable() {
@@ -178,7 +184,11 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
     @Override
     public void onFailed(Method invoker,final Object o) {
         HttpBinderEntity binderEntity = methodCaches.get(invoker).getBinderEntity();
-        final ICallBack callBack = callBacks.get(invoker.getName());
+        final ICallBack callBack;
+        if (sigleCallback == null)
+            callBack = callBacks.get(invoker.getName());
+        else
+            callBack = sigleCallback;
         if (binderEntity.getControl().runMode() == HttpRunMode.Sync) {
             if (callBack != null)
                 callBack.onFailed(o);
@@ -195,5 +205,13 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
 
     public void setViewContentRef(Map<String, WeakReference<View>> viewContentRef) {
         this.viewContentRef = viewContentRef;
+    }
+
+    public void setViewsingle(WeakReference<View> viewsingle) {
+        this.viewsingle = viewsingle;
+    }
+
+    public void setSigleCallback(ICallBack sigleCallback) {
+        this.sigleCallback = sigleCallback;
     }
 }
