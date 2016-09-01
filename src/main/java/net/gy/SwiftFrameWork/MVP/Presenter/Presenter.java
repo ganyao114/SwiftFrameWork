@@ -174,4 +174,10 @@ public abstract class Presenter implements IPresenterCallBack{
         return contextList;
     }
 
+    public void navTo(Class<? extends Activity> ac){
+        Intent intent = new Intent();
+        intent.setClass(getContext(),ac);
+        getContext().startActivity(intent);
+    }
+
 }
