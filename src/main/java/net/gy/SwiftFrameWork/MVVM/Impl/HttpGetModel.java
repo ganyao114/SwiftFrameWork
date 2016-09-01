@@ -26,27 +26,6 @@ import java.util.Map;
 public class HttpGetModel extends BaseHttpModel{
 
     @Override
-    public void setUrl(String url) {
-        if (parLocal.get() == null)
-            parLocal.set(new ParField());
-        parLocal.get().setUrl(url);
-    }
-
-    @Override
-    public void addPar(String key, String value) {
-        if (parLocal.get() == null)
-            parLocal.set(new ParField());
-        parLocal.get().addPar(key, value);
-    }
-
-    @Override
-    public void addHeader(String key, String value) {
-        if (parLocal.get() == null)
-            parLocal.set(new ParField());
-        parLocal.get().addHeader(key, value);
-    }
-
-    @Override
     public Object dohttp() throws Exception{
 
         HttpClient client = HttpClientFactory.GetHttpClient();

@@ -20,4 +20,5 @@ public @interface HttpSrcMethod {
     HttpConnectMode connMode() default HttpConnectMode.Post;
     HttpRunMode runMode() default HttpRunMode.Async;
     Class<? extends IFilter>[] filters() default IFilter.class;
+    String session() default "";
 }

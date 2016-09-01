@@ -5,6 +5,7 @@ import android.util.Log;
 import net.gy.SwiftFrameWork.MVVM.Entity.HttpBinderEntity;
 import net.gy.SwiftFrameWork.MVVM.Entity.JsonTree;
 import net.gy.SwiftFrameWork.MVVM.Entity.ParType;
+import net.gy.SwiftFrameWork.MVVM.Entity.SessionFactory;
 import net.gy.SwiftFrameWork.MVVM.Exception.HttpServiceException;
 import net.gy.SwiftFrameWork.MVVM.Interface.ICallBack;
 import net.gy.SwiftFrameWork.MVVM.Interface.ICallBackInner;
@@ -36,6 +37,18 @@ public class HttpTemplet extends HttpThreadTemplet implements IThreadCallback{
         super(callBack,invoker);
         this.httpModel = httpModel;
         this.threadCallback = this;
+    }
+
+    private void sessionInit() {
+        //初始化session
+        String sessionkey = binderEntity.getControl().session();
+        if (sessionkey == null||sessionkey.equals(""))
+            return;
+        SessionFactory.Session session = SessionFactory.getSession(sessionkey);
+        if (session!=null){
+            httpModel.setHeaders(session.getHeaders());
+            httpModel.setPars(session.getPars());
+        }
     }
 
     public HttpTemplet(ICallBackInner callBack, HttpTheadConfigBean configBean,IHttpModel httpModel,Method invoker) {
@@ -86,7 +99,7 @@ public class HttpTemplet extends HttpThreadTemplet implements IThreadCallback{
 
     @Override
     protected void OnRun() throws Exception {
-        Log.e("gy","成功!来自"+invoker.getName());
+        sessionInit();
         setPar();
         Object object = httpModel.dohttp();
         if (object == null)
