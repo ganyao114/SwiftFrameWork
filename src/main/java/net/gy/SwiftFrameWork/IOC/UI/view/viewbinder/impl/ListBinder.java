@@ -1,20 +1,15 @@
 package net.gy.SwiftFrameWork.IOC.UI.view.viewbinder.impl;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 
 import net.gy.SwiftFrameWork.IOC.Core.cache.FieldEntity;
-import net.gy.SwiftFrameWork.IOC.Core.cache.MethodEntity;
 import net.gy.SwiftFrameWork.IOC.Core.cache.ReflectWithCache;
-import net.gy.SwiftFrameWork.IOC.Core.entity.ClassMemberPackage;
-import net.gy.SwiftFrameWork.IOC.Core.parase.ClassMemberParase;
 import net.gy.SwiftFrameWork.IOC.UI.view.viewbinder.annotation.ListBinderBase;
 import net.gy.SwiftFrameWork.IOC.UI.view.viewbinder.annotation.ListBinderLtnBase;
 import net.gy.SwiftFrameWork.IOC.UI.view.viewbinder.annotation.ListDataSrc;
 import net.gy.SwiftFrameWork.IOC.UI.view.viewbinder.entity.BinderPackage;
-import net.gy.SwiftFrameWork.R;
 import net.gy.SwiftFrameWork.UI.view.baserecycleview.ViewHolder;
 import net.gy.SwiftFrameWork.UI.view.collectionview.IAdapterCallBack;
 import net.gy.SwiftFrameWork.UI.view.collectionview.adapter.NomListAdapter;
@@ -89,6 +84,8 @@ public class ListBinder {
 //        if (mems == null||mems.size()==0)
 //            return;
         FieldEntity[] fieldEntities = ReflectWithCache.getFieldsWithType(clazz);
+        if (fieldEntities == null)
+            fieldEntities = new FieldEntity[]{};
         final BinderPackage binderPackage = new BinderPackage();
         binderPackage.setList(list);
         for (FieldEntity entity : fieldEntities){
