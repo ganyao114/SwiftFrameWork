@@ -52,7 +52,7 @@ public class ObserverProxy<T> implements OnObserver<T>,IObserverProxy<T>{
         for (OnObserver<T> observer:observers){
             try {
                 Method method = observer.getClass().getMethod(methodName);
-                invoker.invoke(method,observer,null);
+                invoker.invoke(method,observer);
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
             }

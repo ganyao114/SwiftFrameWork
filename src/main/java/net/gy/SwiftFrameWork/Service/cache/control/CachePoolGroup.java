@@ -2,11 +2,10 @@ package net.gy.SwiftFrameWork.Service.cache.control;
 
 import net.gy.SwiftFrameWork.Service.cache.ICachePool;
 import net.gy.SwiftFrameWork.Service.cache.config.PoolType;
-import net.gy.SwiftFrameWork.Service.cache.entity.RootCachePool;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by pc on 16/8/9.
@@ -19,9 +18,9 @@ public class CachePoolGroup<K> extends CachePool{
     @Override
     public Object delById(Object key) {
         Object value = poolMap.get(key);
-        if (value == null)
+        if (value != null)
         {
-
+            return poolMap.remove(key);
         }
         return super.delById(key);
     }
@@ -107,7 +106,11 @@ public class CachePoolGroup<K> extends CachePool{
 
     @Override
     public void init(PoolType type) {
-
+        if (type == PoolType.Sync){
+            poolMap = new ConcurrentHashMap<>();
+        }else {
+            poolMap = new HashMap<>();
+        }
     }
 
     public <I,T> T dispatchCache(I id){

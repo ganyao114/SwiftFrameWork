@@ -1,13 +1,10 @@
 package net.gy.SwiftFrameWork.Service.cache.control;
 
 import net.gy.SwiftFrameWork.Service.cache.ICachePool;
-import net.gy.SwiftFrameWork.Service.cache.IRamCache;
 import net.gy.SwiftFrameWork.Service.cache.config.PoolType;
-import net.gy.SwiftFrameWork.Service.cache.entity.ICache;
 import net.gy.SwiftFrameWork.Service.cache.entity.ICacheEntry;
 import net.gy.SwiftFrameWork.Service.cache.entity.RootCachePool;
 
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
