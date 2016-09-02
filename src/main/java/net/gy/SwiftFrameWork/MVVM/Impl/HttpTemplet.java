@@ -1,15 +1,13 @@
 package net.gy.SwiftFrameWork.MVVM.Impl;
 
-import android.util.Log;
-
 import net.gy.SwiftFrameWork.MVVM.Entity.HttpBinderEntity;
 import net.gy.SwiftFrameWork.MVVM.Entity.JsonTree;
 import net.gy.SwiftFrameWork.MVVM.Entity.ParType;
 import net.gy.SwiftFrameWork.MVVM.Entity.SessionFactory;
 import net.gy.SwiftFrameWork.MVVM.Exception.HttpServiceException;
-import net.gy.SwiftFrameWork.MVVM.Interface.ICallBack;
 import net.gy.SwiftFrameWork.MVVM.Interface.ICallBackInner;
 import net.gy.SwiftFrameWork.MVVM.Interface.IFilter;
+import net.gy.SwiftFrameWork.MVVM.Interface.IHandler;
 import net.gy.SwiftFrameWork.MVVM.Interface.IHttpModel;
 import net.gy.SwiftFrameWork.MVVM.templet.HttpThreadTemplet;
 import net.gy.SwiftFrameWork.MVVM.templet.configs.HttpTheadConfigBean;
@@ -18,7 +16,6 @@ import net.gy.SwiftFrameWork.Service.thread.IThreadCallback;
 
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Created by pc on 16/8/30.
@@ -112,6 +109,8 @@ public class HttpTemplet extends HttpThreadTemplet implements IThreadCallback{
         }
         if (jsonTree != null)
             object = JsonParse.getValue(jsonTree,object.toString());
+        if (object instanceof IHandler)
+            ((IHandler)object).handler();
         callBack.onSuccess(invoker,object);
     }
 
