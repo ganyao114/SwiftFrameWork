@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.WeakHashMap;
+import java.util.Map;
 
 /**
  * Created by gy on 2015/11/24.
@@ -79,8 +79,8 @@ public class EventAnnotationsFactory {
     }
 
     private void insertEntity(EventPackage eventPackage, Class clazz) {
-        HashMap<Class<?>,HashMap<String,EventPackage>> posts =  EventPoster.getInstance().getPostEvents();
-        WeakHashMap<Class<?>,List<WeakReference<EventPackage>>> broads = EventPoster.getInstance().getBroadCastEvents();
+        Map<Class<?>,HashMap<String,EventPackage>> posts =  EventPoster.getInstance().getPostEvents();
+        Map<Class<?>,List<WeakReference<EventPackage>>> broads = EventPoster.getInstance().getBroadCastEvents();
         if (!posts.containsKey(clazz))
             posts.put(clazz,new HashMap<String, EventPackage>());
         posts.get(clazz).put(eventPackage.getMethod().getName(),eventPackage);

@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by gy on 2015/11/24.
@@ -26,23 +27,25 @@ public final class EventPoster {
     private static EventPoster eventPoster;
 
     private static final Map<Class<?>, List<Class<?>>> eventTypesCache = new WeakHashMap<Class<?>, List<Class<?>>>();
-    private static WeakHashMap<Class<?>,List<WeakReference<EventPackage>>> broadCastEvents;
-    private static HashMap<Class<?>,HashMap<String,EventPackage>> postEvents;
+    private static Map<Class<?>,List<WeakReference<EventPackage>>> broadCastEvents;
+    private static Map<Class<?>,HashMap<String,EventPackage>> postEvents;
     private String callMethod = "onEvent";
     private Class<?> callInter = IEventProxy.class;
     private Handler mainHandler;
 
     public static EventPoster getInstance(){
-        synchronized (EventPoster.class) {
-            if (eventPoster == null)
-                eventPoster = new EventPoster();
+        if (eventPoster == null) {
+            synchronized (EventPoster.class) {
+                if (eventPoster == null)
+                    eventPoster = new EventPoster();
+            }
         }
         return eventPoster;
     }
 
     private EventPoster() {
-        broadCastEvents = new WeakHashMap<Class<?>,List<WeakReference<EventPackage>>>();
-        postEvents = new HashMap<Class<?>,HashMap<String,EventPackage>>();
+        broadCastEvents = new ConcurrentHashMap<Class<?>,List<WeakReference<EventPackage>>>();
+        postEvents = new ConcurrentHashMap<Class<?>,HashMap<String,EventPackage>>();
     }
 
     public void regist(Object object){
@@ -186,12 +189,12 @@ public final class EventPoster {
             mainHandler.postDelayed(new EventRunnable((IEventProxy) bussnessproxy,object),time);
     }
 
-    public WeakHashMap<Class<?>, List<WeakReference<EventPackage>>> getBroadCastEvents() {
+    public Map<Class<?>, List<WeakReference<EventPackage>>> getBroadCastEvents() {
         return broadCastEvents;
     }
 
 
-    public HashMap<Class<?>, HashMap<String, EventPackage>> getPostEvents() {
+    public Map<Class<?>, HashMap<String, EventPackage>> getPostEvents() {
         return postEvents;
     }
 
