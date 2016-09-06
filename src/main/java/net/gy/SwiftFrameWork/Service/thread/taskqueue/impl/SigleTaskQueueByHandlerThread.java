@@ -51,7 +51,8 @@ public class SigleTaskQueueByHandlerThread implements ITaskQueue{
 
     @Override
     public boolean removeTask(Runnable runnable) {
-        return false;
+        handler.removeCallbacks(runnable);
+        return true;
     }
 
     @Override
