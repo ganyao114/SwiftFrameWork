@@ -20,6 +20,7 @@ import net.gy.SwiftFrameWork.Service.cache.entity.ICacheEntry;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Static library version of {@link android.util.LruCache}. Used to write apps
@@ -124,6 +125,11 @@ public class LruCache<K, V> implements ICacheEntry<K,V>{
         }
     }
 
+    @Override
+    public Set<K> getKeys() {
+        return null;
+    }
+
     /**
      * Caches {@code value} for {@code key}. The value is moved to the head of
      * the queue.
@@ -224,6 +230,21 @@ public class LruCache<K, V> implements ICacheEntry<K,V>{
     @Override
     public long compress() {
         return 0;
+    }
+
+    @Override
+    public void swapout() {
+
+    }
+
+    @Override
+    public void swapin() {
+
+    }
+
+    @Override
+    public ICacheEntry<K, V> getEntry() {
+        return null;
     }
 
     /**

@@ -4,8 +4,8 @@ import net.gy.SwiftFrameWork.Service.cache.entity.ICacheEntry;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by pc on 16/8/21.
@@ -33,6 +33,11 @@ public class ClassCache implements ICacheEntry<Class,Map<Class<? extends Annotat
     }
 
     @Override
+    public Set<Class> getKeys() {
+        return null;
+    }
+
+    @Override
     public Map<Class<? extends Annotation>,Annotation> remove(Class aClass) {
         return cache.remove(aClass);
     }
@@ -50,5 +55,20 @@ public class ClassCache implements ICacheEntry<Class,Map<Class<? extends Annotat
     @Override
     public long compress() {
         return 0;
+    }
+
+    @Override
+    public void swapout() {
+
+    }
+
+    @Override
+    public void swapin() {
+
+    }
+
+    @Override
+    public ICacheEntry<Class, Map<Class<? extends Annotation>, Annotation>> getEntry() {
+        return this;
     }
 }

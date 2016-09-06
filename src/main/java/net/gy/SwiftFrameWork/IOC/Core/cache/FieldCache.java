@@ -3,6 +3,7 @@ package net.gy.SwiftFrameWork.IOC.Core.cache;
 import net.gy.SwiftFrameWork.Service.cache.entity.ICacheEntry;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -31,6 +32,11 @@ public class FieldCache implements ICacheEntry<Class,FieldEntity[]> {
     }
 
     @Override
+    public Set<Class> getKeys() {
+        return null;
+    }
+
+    @Override
     public FieldEntity[] remove(Class aClass) {
         return cache.remove(aClass);
     }
@@ -48,5 +54,20 @@ public class FieldCache implements ICacheEntry<Class,FieldEntity[]> {
     @Override
     public long compress() {
         return 0;
+    }
+
+    @Override
+    public void swapout() {
+
+    }
+
+    @Override
+    public void swapin() {
+
+    }
+
+    @Override
+    public ICacheEntry<Class, FieldEntity[]> getEntry() {
+        return null;
     }
 }
