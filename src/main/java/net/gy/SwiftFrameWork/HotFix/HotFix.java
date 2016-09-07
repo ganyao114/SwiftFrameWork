@@ -26,8 +26,6 @@ public final class HotFix {
 
     private static final int BUF_SIZE = 2048;
 
-    private static final int BUFSIZE = 2048;
-
     public static boolean prepareDex(Context context, File dexInternalStoragePath, String dex_file) {
         BufferedInputStream bis = null;
         OutputStream dexWriter = null;

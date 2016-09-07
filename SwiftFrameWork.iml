@@ -121,8 +121,9 @@
     <orderEntry type="library" exported="" name="junit-4.12" level="project" />
     <orderEntry type="library" exported="" name="asm" level="project" />
     <orderEntry type="library" exported="" name="cardview-v7-24.1.1" level="project" />
-    <orderEntry type="library" exported="" name="asm-tree" level="project" />
     <orderEntry type="library" exported="" name="javassist" level="project" />
+    <orderEntry type="library" exported="" name="asm-tree" level="project" />
+    <orderEntry type="library" exported="" name="android-android-23" level="project" />
     <orderEntry type="library" exported="" name="org.apache.http.legacy-android-23" level="project" />
   </component>
 </module>
