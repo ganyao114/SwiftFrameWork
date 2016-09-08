@@ -29,6 +29,7 @@ public class JsonParse {
         headmem.setJsontype(JsonObjType.HEAD);
         headmem.setType(clazz);
         headmem.setKey(clazz.getName());
+        //开始递归建立树
         establish(headmem);
         JsonTree jsonTree = new JsonTree();
         jsonTree.setTop(headmem);
@@ -38,13 +39,16 @@ public class JsonParse {
     private static void establish(JsonMem mem){
         Field[] fields = mem.getType().getDeclaredFields();
         List<JsonMem> childs = new ArrayList<>();
+        //遍历所有域
         for (Field field:fields){
             Annotation[] annotations = field.getAnnotations();
             if (annotations == null||annotations.length == 0)
                 continue;
             field.setAccessible(true);
+            //便利所有注解
             for (Annotation annotation:annotations){
                 Class<? extends Annotation> type = annotation.annotationType();
+                //如果元素是JSONArray
                 if (type == JsonSet.class){
                     JsonSet set = (JsonSet) annotation;
                     String key = set.name();
@@ -55,9 +59,12 @@ public class JsonParse {
                     jsonMem.setJsontype(JsonObjType.ARRAY);
                     jsonMem.setField(field);
                     jsonMem.setType(set.clazz());
+                    //判断JSONArray的item是否是普通元素还是JSONObject，这里普通元素暂时偷懒用String代替
+                    //如果不是普通类型则需要递归解析
                     if (jsonMem.getType()!=String.class)
                         establish(jsonMem);
                     childs.add(jsonMem);
+                    //如果元素是JsonObject
                 }else if (type == JsonObject.class){
                     JsonObject jsonObject = (JsonObject) annotation;
                     String key = jsonObject.value();
@@ -68,9 +75,11 @@ public class JsonParse {
                     jsonMem.setJsontype(JsonObjType.OBJECT);
                     jsonMem.setField(field);
                     jsonMem.setType(field.getType());
+                    //递归解析
                     establish(jsonMem);
                     childs.add(jsonMem);
                 }else{
+                    //只是普通元素
                     JsonBase jbase = annotation.annotationType().getAnnotation(JsonBase.class);
                     if (jbase == null)
                         continue;
@@ -93,10 +102,10 @@ public class JsonParse {
     public static <T> T getValue(JsonTree tree,String json) throws Exception{
         Class clazz = tree.getTop().getType();
         T t = null;
+        //反射生成一个Model对象
         t = (T) clazz.newInstance();
+        //取出根结点开始遍历解析
         getValue(tree.getTop(),json,t);
-        if (t instanceof IHandler)
-            ((IHandler)t).handler();
         return t;
     }
 
@@ -104,10 +113,13 @@ public class JsonParse {
         Field field = mem.getField();
         Class type = mem.getType();
         List<JsonMem> childs = mem.getChilds();
+        //依旧是判断元素类型
         switch (mem.getJsontype()){
+            //如果是根节点
             case HEAD:
                 JSONObject headobj = new JSONObject(json);
                 if (childs!=null){
+                    //遍历子元素
                     for (JsonMem child:childs){
                         String str = headobj.getString(child.getKey());
                         getValue(child,str,object);
@@ -115,8 +127,10 @@ public class JsonParse {
                 }
                 break;
             case ELEMENT:
+                //普通元素直接赋值
                 field.set(object,json);
                 break;
+            //JSONObject需要递归其子元素
             case OBJECT:
                 JSONObject jsonObject = new JSONObject(json);
                 Object valueobj = type.newInstance();
@@ -128,16 +142,19 @@ public class JsonParse {
                 }
                 field.set(object,valueobj);
                 break;
+            //如果是JSONArrary
             case ARRAY:
                 JSONArray array = new JSONArray(json);
                 if (array == null||array.length() == 0)
                     break;
                 List list = new ArrayList();
+                //如果item是普通元素则直接赋值
                 if (type == String.class){
                     for (int i = 0;i < array.length();i++){
                         list.add(array.getString(i));
                     }
                 }else {
+                    //否则递归
                     for (int i = 0;i < array.length();i++){
                         Object arritem = type.newInstance();
                         JSONObject subobj = array.getJSONObject(i);

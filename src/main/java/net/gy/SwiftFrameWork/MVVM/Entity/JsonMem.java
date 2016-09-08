@@ -8,10 +8,15 @@ import java.util.List;
  */
 public class JsonMem {
 
+    //json中对应的key
     private String key;
+    //json元素类型,普通元素，JSONObject，JSONArrary，或者根结点
     private JsonObjType jsontype;
+    //对应数据模型model中的类型
     private Class type;
+    //对应数据模型model中的field
     private Field field;
+    //子节点列表
     private List<JsonMem> childs;
 
     public String getKey() {

@@ -6,6 +6,8 @@ import net.gy.SwiftFrameWork.Service.cache.entity.ICacheEntry;
 import net.gy.SwiftFrameWork.Service.cache.entity.RootCachePool;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Created by pc on 16/8/9.
@@ -22,7 +24,10 @@ public class CachePool<K,V> implements ICachePool<K,V>{
 
     private boolean compressable = false;
 
+
+    //for sync
     public AtomicBoolean isMtc = new AtomicBoolean(false);
+    public ReadWriteLock lock;
 
 //    public static ICachePool buildPool(){
 //        if (poolRoot == null){
@@ -41,7 +46,7 @@ public class CachePool<K,V> implements ICachePool<K,V>{
 
     @Override
     public void init(PoolType type) {
-
+        lock = new ReentrantReadWriteLock();
     }
 
     @Override
