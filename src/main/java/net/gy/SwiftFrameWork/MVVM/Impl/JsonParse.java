@@ -109,6 +109,74 @@ public class JsonParse {
         return t;
     }
 
+    public static String getJson(JsonTree tree,Object o) throws Exception{
+        String jsonStr = getJson(tree.getTop(),o);
+        return jsonStr;
+    }
+
+    public static String getJson(JsonMem mem,Object o) throws Exception{
+        String jsonStr = null;
+        Field field = mem.getField();
+        Class type = mem.getType();
+        List<JsonMem> childs = mem.getChilds();
+        //依旧是判断元素类型
+        switch (mem.getJsontype()){
+            //如果是根节点
+            case HEAD:
+                JSONObject headobj = new JSONObject();
+                if (childs!=null){
+                    //遍历子元素
+                    for (JsonMem child:childs){
+                        Object co = mem.getField().get(o);
+                        headobj.put(mem.getKey(),getJson(child,o));
+                    }
+                    jsonStr =  headobj.toString();
+                }
+                break;
+            case ELEMENT:
+                //普通元素直接赋值
+                jsonStr =  mem.getField().get(o).toString();
+                break;
+            //JSONObject需要递归其子元素
+            case OBJECT:
+                JSONObject jsonObject = new JSONObject();
+                if (childs!=null){
+                    for (JsonMem child:childs){
+                        Object co = mem.getField().get(o);
+                        jsonObject.put(mem.getKey(),getJson(child,o));
+                    }
+                }
+                jsonStr =  jsonObject.toString();
+                break;
+            //如果是JSONArrary
+            case ARRAY:
+                JSONArray array = new JSONArray();
+                List list = (List) o;
+                if (array == null||array.length() == 0)
+                    return null;
+                //如果item是普通元素则直接赋值
+                if (type == String.class){
+                    for (int i = 0;i < list.size();i++){
+                        array.put(list.get(i).toString());
+                    }
+                }else {
+                    //否则递归
+                    for (int i = 0;i < list.size();i++){
+                        JSONObject subjobj = new JSONObject();
+                        if (childs!=null){
+                            for (JsonMem child:childs){
+                                subjobj.put(child.getKey(),getJson(child,list.get(i)));
+                            }
+                        }
+                        array.put(subjobj);
+                    }
+                }
+                jsonStr = array.toString();
+                break;
+        }
+        return jsonStr;
+    }
+
     private static void getValue(JsonMem mem,String json,Object object) throws Exception {
         Field field = mem.getField();
         Class type = mem.getType();
