@@ -49,7 +49,7 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
         init();
     }
 
-    private void init() {
+    private final void init() {
         mainHandler = new Handler(Looper.getMainLooper());
         for (Map.Entry<Method,MethodCache> binderEntityEntry:methodCaches.entrySet()) {
             HttpBinderEntity binderEntity = binderEntityEntry.getValue().getBinderEntity();
@@ -79,6 +79,9 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
             HttpTemplet httpTemplet = new HttpTemplet(this, httpModel,invoker);
 
             String url = control.url();
+            String urlBase = BaseUrlFactory.getUrl(control.baseUrlKey());
+            if (urlBase != null)
+                url = urlBase + url;
             if (!url.equals(""))
                 httpTemplet.setDefaultUrl(url);
 

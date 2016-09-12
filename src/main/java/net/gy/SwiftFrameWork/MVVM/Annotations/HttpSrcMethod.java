@@ -17,6 +17,7 @@ import java.lang.annotation.Target;
 @SrcMethodBase
 public @interface HttpSrcMethod {
     String url() default "";
+    String baseUrlKey() default "default";
     HttpConnectMode connMode() default HttpConnectMode.Post;
     HttpRunMode runMode() default HttpRunMode.Async;
     Class<? extends IFilter>[] filters() default IFilter.class;
