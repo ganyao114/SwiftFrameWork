@@ -50,6 +50,8 @@ public class MaterialDialog {
     private View                              mMessageContentView;
     private DialogInterface.OnDismissListener mOnDismissListener;
 
+    public View content;
+
     public MaterialDialog(Context context) {
         this.mContext = context;
     }
@@ -450,6 +452,7 @@ public class MaterialDialog {
                 setListViewHeightBasedOnChildren((ListView) contentView);
             }
             LinearLayout linearLayout = (LinearLayout) mAlertDialogWindow.findViewById(R.id.message_content_view);
+            content = linearLayout;
             if (linearLayout != null) {
                 linearLayout.removeAllViews();
                 linearLayout.addView(contentView);

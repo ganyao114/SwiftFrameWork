@@ -164,6 +164,8 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
 
     private void show(final Method invoker, final Object o) {
         final View content;
+        if (viewsingle == null&&(viewContentRef==null||viewContentRef.size()==0))
+            return;
         if (viewsingle == null) {
             content = viewContentRef.get(invoker.getName()).get();
         }
