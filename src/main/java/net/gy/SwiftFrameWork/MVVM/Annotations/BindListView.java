@@ -1,6 +1,7 @@
 package net.gy.SwiftFrameWork.MVVM.Annotations;
 
 import android.support.annotation.IdRes;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -15,7 +16,7 @@ import java.util.List;
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@BindViewBase(viewType = ListView.class,methodName = "null",dataType = List.class)
+@BindViewBase(viewType = AbsListView.class,methodName = "null",dataType = List.class)
 public @interface BindListView {
     @IdRes int[] value();
 }

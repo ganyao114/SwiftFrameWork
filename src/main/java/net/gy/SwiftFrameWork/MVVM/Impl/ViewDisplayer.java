@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.GridView;
 import android.widget.ListView;
 
 import net.gy.SwiftFrameWork.Core.S;
@@ -56,7 +57,7 @@ public class ViewDisplayer {
                 continue;
             if (view instanceof RecyclerView){
                 S.ViewUtils.ListBind((RecyclerView) view).bind((List<?>) object);
-            }else if (view instanceof ListView||view instanceof RecyclerView){
+            }else if (view instanceof ListView||view instanceof GridView){
                 S.ViewUtils.ListBind((AbsListView) view).bind((List<?>) object);
             }
         }
