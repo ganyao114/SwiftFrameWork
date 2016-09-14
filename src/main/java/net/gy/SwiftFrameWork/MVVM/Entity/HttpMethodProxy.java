@@ -120,7 +120,6 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
 
     @Override
     public Object dohasret(Method invoker,Object[] pars) {
-        Log.e("gy",invoker.getName());
         HttpBinderEntity binderEntity = methodCaches.get(invoker).getBinderEntity();
         HttpTemplet httpTemplet = httpTemplets.get(invoker);
         IHttpModel httpModel = httpTemplet.getHttpModel();
