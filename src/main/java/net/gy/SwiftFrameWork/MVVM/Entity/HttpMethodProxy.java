@@ -2,6 +2,7 @@ package net.gy.SwiftFrameWork.MVVM.Entity;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 
 import net.gy.SwiftFrameWork.MVVM.Annotations.HttpSrcMethod;
@@ -119,6 +120,7 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
 
     @Override
     public Object dohasret(Method invoker,Object[] pars) {
+        Log.e("gy",invoker.getName());
         HttpBinderEntity binderEntity = methodCaches.get(invoker).getBinderEntity();
         HttpTemplet httpTemplet = httpTemplets.get(invoker);
         IHttpModel httpModel = httpTemplet.getHttpModel();

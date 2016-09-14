@@ -1,17 +1,16 @@
 package net.gy.SwiftFrameWork.MVVM.ProxyHandler;
 
-import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
 public class DynamicHandler implements InvocationHandler {
-    private WeakReference<Object> handlerRef;
+    private Object handler;
     private final HashMap<String, Method> methodMap = new HashMap<String, Method>(
             1);
 
     public DynamicHandler(Object handler) {
-        this.handlerRef = new WeakReference<Object>(handler);
+        this.handler = handler;
     }
 
     public void addMethod(String name, Method method) {
@@ -19,17 +18,16 @@ public class DynamicHandler implements InvocationHandler {
     }
 
     public Object getHandler() {
-        return handlerRef.get();
+        return handler;
     }
 
     public void setHandler(Object handler) {
-        this.handlerRef = new WeakReference<Object>(handler);
+        this.handler = handler;
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args)
             throws Throwable {
-        Object handler = handlerRef.get();
         if (handler != null) {
             Method invoker = method;
             String methodName = method.getName();

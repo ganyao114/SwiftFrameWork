@@ -28,18 +28,18 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'junit:junit:4.12'
-    compile files('libs/asm.jar')
-    compile files('libs/asm-commons.jar')
-    compile files('libs/asm-tree.jar')
-    compile files('libs/cglib-2.2.jar')
+//    compile 'junit:junit:4.12'
+//    compile files('libs/asm.jar')
+//    compile files('libs/asm-commons.jar')
+//    compile files('libs/asm-tree.jar')
+//    compile files('libs/cglib-2.2.jar')
     compile files('libs/picasso-2.4.0.jar')
     compile files('libs/nineoldandroids-2.4.0.jar')
-    compile files('libs/rxjava-1.1.1.jar')
+    provided files('libs/rxjava-1.1.1.jar')
     compile 'com.google.code.gson:gson:2.2.4'
     compile files('libs/httpmime-4.2.3.jar')
-    compile files('libs/hellocharts-library-1.5.8.jar')
-    compile files('libs/javassist.jar')
+//    provided files('libs/hellocharts-library-1.5.8.jar')
+//    provided files('libs/javassist.jar')
     compile files('libs/systembartint-1.0.4.jar')
     compile 'com.android.support:support-annotations:24.1.1'
     compile 'com.android.support:support-v4:24.1.1'
