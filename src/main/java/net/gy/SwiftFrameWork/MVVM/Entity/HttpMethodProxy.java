@@ -90,7 +90,8 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
 
             httpTemplet.setBinderEntity(binderEntity);
 
-            httpTemplet.setJsonTree(binderEntityEntry.getValue().getRet().getJsonTree());
+            if (binderEntityEntry.getValue().getRet()!=null)
+                httpTemplet.setJsonTree(binderEntityEntry.getValue().getRet().getJsonTree());
 
             httpTemplets.put(invoker,httpTemplet);
         }
@@ -123,10 +124,14 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
         HttpBinderEntity binderEntity = methodCaches.get(invoker).getBinderEntity();
         HttpTemplet httpTemplet = httpTemplets.get(invoker);
         IHttpModel httpModel = httpTemplet.getHttpModel();
-        if (pars.length != binderEntity.getPars().length)
+        if (pars == null&&binderEntity.getPars() == null){
+
+        }else if (pars.length != binderEntity.getPars().length) {
             throw new IllegalArgumentException("输入参数不匹配");
-        //参数初始化
-        httpTemplet.setPars(pars);
+        }else {
+            //参数初始化
+            httpTemplet.setPars(pars);
+        }
 
         if (binderEntity.getControl().runMode() == HttpRunMode.Sync){
             httpTemplet.run();

@@ -48,6 +48,13 @@ public class MethodParse {
                     mcache.setBinderEntity(binderEntity);
                     mcache.setMethod(method);
                     list.put(method,mcache);
+                }else {
+                    HttpBinderEntity binderEntity = new HttpBinderEntity();
+                    binderEntity.setControl(anno);
+                    binderEntity.setPars(getPars(method));
+                    mcache.setBinderEntity(binderEntity);
+                    mcache.setMethod(method);
+                    list.put(method,mcache);
                 }
             }
         }
