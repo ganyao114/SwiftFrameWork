@@ -2,6 +2,7 @@ package net.gy.SwiftFrameWork.IOC.UI.view.viewinject.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -18,6 +19,13 @@ import net.gy.SwiftFrameWork.MVP.View.context.activity.IActivityCallback;
  * Created by gy on 2015/11/30.
  */
 public abstract class BaseFragmentV4<T extends Presenter> extends Fragment{
+
+    /**
+     * 懒加载控制
+     */
+    private boolean isLazyLoaded;
+    private boolean isPrepared;
+
     protected View view;
     private SparseArray<View> mViews = new SparseArray<View>();
     @Nullable
@@ -26,6 +34,34 @@ public abstract class BaseFragmentV4<T extends Presenter> extends Fragment{
         if (view == null)
             view = ViewInjectAll.getInstance().inject(this,inflater,container);
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        isPrepared = true;
+        lazyLoad();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        lazyLoad();
+    }
+
+    /**
+     * 调用懒加载
+     */
+
+    private void lazyLoad() {
+        if (getUserVisibleHint() && isPrepared && !isLazyLoaded) {
+            onLazyLoad();
+            isLazyLoaded = true;
+        }
+    }
+
+    protected void onLazyLoad(){
+
     }
 
     @Override

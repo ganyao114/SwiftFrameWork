@@ -116,6 +116,11 @@ public abstract class Presenter implements IPresenterCallBack{
         return curContextRef.get();
     }
 
+    public static <T> T getContextInter(Presenter presenter){
+        T t = (T) presenter.getContext();
+        return t;
+    }
+
     public Activity getActivityRaw(){
         return (Activity) getContext();
     }
