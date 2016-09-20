@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 接口方法解析器，获取请求协议模型，存入缓存
  * Created by pc on 16/8/30.
  */
 public class MethodParse {

@@ -17,6 +17,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 
 /**
+ * 视图绑定数据模型解析器
  * Created by pc on 16/8/30.
  */
 public class ViewBinderParse {

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 代理实体，用户定义的业务层接口的真正实现类
  * Created by pc on 16/8/29.
  */
 public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * HttpGet实现
  * Created by pc on 16/8/30.
  */
 public class HttpGetModel extends BaseHttpModel{

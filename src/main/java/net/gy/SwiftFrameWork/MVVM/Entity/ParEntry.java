@@ -3,6 +3,7 @@ package net.gy.SwiftFrameWork.MVVM.Entity;
 import net.gy.SwiftFrameWork.Model.entity.Entry;
 
 /**
+ * 参数映射实体
  * Created by pc on 16/8/29.
  */
 public class ParEntry implements Entry<ParType,String>{

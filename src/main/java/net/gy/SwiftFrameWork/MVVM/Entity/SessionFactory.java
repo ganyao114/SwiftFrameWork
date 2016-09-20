@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * 会话工厂
  * Created by pc on 16/9/1.
  */
 public class SessionFactory {

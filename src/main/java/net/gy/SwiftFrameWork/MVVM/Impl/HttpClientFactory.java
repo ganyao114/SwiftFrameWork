@@ -14,6 +14,10 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 
+/**
+ * HttpClient工厂
+ * Created by pc on 16/8/30.
+ */
 public class HttpClientFactory {
     public static HttpClient client;
     private static boolean unusing = true;

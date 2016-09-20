@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * JSON解析器
  * Created by pc on 16/8/30.
  */
 public class JsonParse {

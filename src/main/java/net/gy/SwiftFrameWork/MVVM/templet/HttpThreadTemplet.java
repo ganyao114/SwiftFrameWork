@@ -9,7 +9,10 @@ import org.apache.http.conn.ConnectTimeoutException;
 
 import java.lang.reflect.Method;
 import java.net.SocketTimeoutException;
-
+/**
+ * Http线程体基类，封装异常处理等
+ * Created by pc on 16/8/30.
+ */
 @SuppressWarnings("deprecation")
 public abstract class HttpThreadTemplet implements Runnable {
 

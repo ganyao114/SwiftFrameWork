@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 基础Url工厂
  * Created by gy939 on 2016/9/12.
  */
 public class BaseUrlFactory {

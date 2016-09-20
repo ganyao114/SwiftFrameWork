@@ -4,6 +4,10 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
+/**
+ * 动态代理Handler
+ * Created by pc on 16/8/29.
+ */
 public class DynamicHandler implements InvocationHandler {
     private Object handler;
     private final HashMap<String, Method> methodMap = new HashMap<String, Method>(

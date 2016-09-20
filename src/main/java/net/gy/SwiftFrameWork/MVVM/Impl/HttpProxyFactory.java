@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 代理工厂，外部调用主体
  * Created by pc on 16/8/30.
  */
 public class HttpProxyFactory {

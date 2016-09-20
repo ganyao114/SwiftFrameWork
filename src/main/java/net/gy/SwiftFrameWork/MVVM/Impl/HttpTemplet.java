@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 /**
+ * Http线程体实现
  * Created by pc on 16/8/30.
  */
 public class HttpTemplet extends HttpThreadTemplet implements IThreadCallback{

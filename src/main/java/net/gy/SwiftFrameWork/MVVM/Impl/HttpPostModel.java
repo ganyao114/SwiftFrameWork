@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * HttpPost实现
  * Created by pc on 16/8/30.
  */
 public class HttpPostModel extends BaseHttpModel{

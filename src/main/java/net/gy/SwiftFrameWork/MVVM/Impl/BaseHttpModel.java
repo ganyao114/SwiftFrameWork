@@ -6,6 +6,7 @@ import net.gy.SwiftFrameWork.MVVM.Interface.IHttpModel;
 import java.util.Map;
 
 /**
+ * Http请求基类
  * Created by pc on 16/8/30.
  */
 public abstract class BaseHttpModel implements IHttpModel{
