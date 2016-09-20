@@ -5,6 +5,7 @@ import net.gy.SwiftFrameWork.MVVM.Entity.HttpBinderEntity;
 import java.lang.reflect.Method;
 
 /**
+ * 方法反射信息缓存实体
  * Created by pc on 16/8/30.
  */
 public class MethodCache {

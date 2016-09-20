@@ -5,6 +5,7 @@ import net.gy.SwiftFrameWork.MVVM.Entity.JsonTree;
 import net.gy.SwiftFrameWork.MVVM.Entity.ViewBindControl;
 
 /**
+ * 返回值映射缓存实体
  * Created by pc on 16/8/30.
  */
 public class PojoCache {

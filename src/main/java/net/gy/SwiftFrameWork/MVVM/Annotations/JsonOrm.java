@@ -6,6 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * JSON实体注解
  * Created by pc on 16/8/30.
  */
 @Target(ElementType.TYPE)

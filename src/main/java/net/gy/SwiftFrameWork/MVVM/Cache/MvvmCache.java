@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
+ * 缓存实体
  * Created by pc on 16/8/30.
  */
 public class MvvmCache {

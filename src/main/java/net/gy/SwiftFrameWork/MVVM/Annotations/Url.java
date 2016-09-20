@@ -6,6 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Url参数注解
  * Created by pc on 16/8/29.
  */
 @Target(ElementType.PARAMETER)

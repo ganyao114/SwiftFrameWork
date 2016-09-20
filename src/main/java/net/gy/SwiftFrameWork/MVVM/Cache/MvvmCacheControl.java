@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 缓存控制器
  * Created by pc on 16/8/30.
  */
 public class MvvmCacheControl {
