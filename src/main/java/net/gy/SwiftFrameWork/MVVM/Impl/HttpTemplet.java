@@ -8,7 +8,7 @@ import net.gy.SwiftFrameWork.MVVM.Exception.HttpServiceException;
 import net.gy.SwiftFrameWork.MVVM.Interface.ICallBackInner;
 import net.gy.SwiftFrameWork.MVVM.Interface.IFilter;
 import net.gy.SwiftFrameWork.MVVM.Interface.IHandler;
-import net.gy.SwiftFrameWork.MVVM.Interface.IHttpModel;
+import net.gy.SwiftFrameWork.MVVM.Interface.IHttpDriver;
 import net.gy.SwiftFrameWork.MVVM.templet.HttpThreadTemplet;
 import net.gy.SwiftFrameWork.MVVM.templet.configs.HttpTheadConfigBean;
 import net.gy.SwiftFrameWork.Model.entity.Entry;
@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class HttpTemplet extends HttpThreadTemplet implements IThreadCallback{
 
-    private IHttpModel httpModel;
+    private IHttpDriver httpModel;
     private List<IFilter> filters;
     private Object[] pars;
     private HttpBinderEntity binderEntity;
@@ -31,7 +31,7 @@ public class HttpTemplet extends HttpThreadTemplet implements IThreadCallback{
     private JsonTree jsonTree;
 
 
-    public HttpTemplet(ICallBackInner callBack, IHttpModel httpModel, Method invoker) {
+    public HttpTemplet(ICallBackInner callBack, IHttpDriver httpModel, Method invoker) {
         super(callBack,invoker);
         this.httpModel = httpModel;
         this.threadCallback = this;
@@ -49,7 +49,7 @@ public class HttpTemplet extends HttpThreadTemplet implements IThreadCallback{
         }
     }
 
-    public HttpTemplet(ICallBackInner callBack, HttpTheadConfigBean configBean,IHttpModel httpModel,Method invoker) {
+    public HttpTemplet(ICallBackInner callBack, HttpTheadConfigBean configBean, IHttpDriver httpModel, Method invoker) {
         super(callBack, configBean,invoker);
         this.httpModel = httpModel;
         this.threadCallback = this;
@@ -63,11 +63,11 @@ public class HttpTemplet extends HttpThreadTemplet implements IThreadCallback{
         this.filters = filters;
     }
 
-    public IHttpModel getHttpModel() {
+    public IHttpDriver getHttpModel() {
         return httpModel;
     }
 
-    public void setHttpModel(IHttpModel httpModel) {
+    public void setHttpModel(IHttpDriver httpModel) {
         this.httpModel = httpModel;
     }
 

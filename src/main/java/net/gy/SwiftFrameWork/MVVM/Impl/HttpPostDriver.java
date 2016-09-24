@@ -1,9 +1,7 @@
 package net.gy.SwiftFrameWork.MVVM.Impl;
 
-import net.gy.SwiftFrameWork.MVVM.Entity.ParField;
 import net.gy.SwiftFrameWork.MVVM.Exception.HttpServiceException;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -14,7 +12,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +20,7 @@ import java.util.Map;
  * HttpPost实现
  * Created by pc on 16/8/30.
  */
-public class HttpPostModel extends BaseHttpModel{
+public class HttpPostDriver extends BaseHttpDriver {
 
     @Override
     public Object dohttp() throws Exception{

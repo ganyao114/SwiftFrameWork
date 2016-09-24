@@ -2,20 +2,19 @@ package net.gy.SwiftFrameWork.MVVM.Entity;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 
 import net.gy.SwiftFrameWork.MVVM.Annotations.HttpSrcMethod;
 import net.gy.SwiftFrameWork.MVVM.Cache.MethodCache;
 import net.gy.SwiftFrameWork.MVVM.Cache.MvvmCache;
-import net.gy.SwiftFrameWork.MVVM.Impl.HttpGetModel;
-import net.gy.SwiftFrameWork.MVVM.Impl.HttpPostModel;
+import net.gy.SwiftFrameWork.MVVM.Impl.HttpGetDriver;
+import net.gy.SwiftFrameWork.MVVM.Impl.HttpPostDriver;
 import net.gy.SwiftFrameWork.MVVM.Impl.HttpTemplet;
 import net.gy.SwiftFrameWork.MVVM.Impl.ViewDisplayer;
 import net.gy.SwiftFrameWork.MVVM.Interface.ICallBack;
 import net.gy.SwiftFrameWork.MVVM.Interface.ICallBackInner;
 import net.gy.SwiftFrameWork.MVVM.Interface.IFilter;
-import net.gy.SwiftFrameWork.MVVM.Interface.IHttpModel;
+import net.gy.SwiftFrameWork.MVVM.Interface.IHttpDriver;
 import net.gy.SwiftFrameWork.MVVM.Interface.IMethodProxy;
 import net.gy.SwiftFrameWork.Service.thread.pool.impl.MyWorkThreadQueue;
 
@@ -57,13 +56,13 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
             HttpBinderEntity binderEntity = binderEntityEntry.getValue().getBinderEntity();
             Method invoker = binderEntityEntry.getKey();
             HttpSrcMethod control = binderEntity.getControl();
-            IHttpModel httpModel = null;
+            IHttpDriver httpModel = null;
             switch (control.connMode()) {
                 case Post:
-                    httpModel = new HttpPostModel();
+                    httpModel = new HttpPostDriver();
                     break;
                 case Get:
-                    httpModel = new HttpGetModel();
+                    httpModel = new HttpGetDriver();
                     break;
             }
 
@@ -103,7 +102,7 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
     public void donoret(Method invoker, Object[] pars) {
         HttpBinderEntity binderEntity = methodCaches.get(invoker).getBinderEntity();
         HttpTemplet httpTemplet = httpTemplets.get(invoker);
-        IHttpModel httpModel = httpTemplet.getHttpModel();
+        IHttpDriver httpModel = httpTemplet.getHttpModel();
         if (pars == null&&binderEntity.getPars() == null){
 
         }else if (pars.length != binderEntity.getPars().length) {
@@ -128,7 +127,7 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
     public Object dohasret(Method invoker,Object[] pars) {
         HttpBinderEntity binderEntity = methodCaches.get(invoker).getBinderEntity();
         HttpTemplet httpTemplet = httpTemplets.get(invoker);
-        IHttpModel httpModel = httpTemplet.getHttpModel();
+        IHttpDriver httpModel = httpTemplet.getHttpModel();
         if (pars == null&&binderEntity.getPars() == null){
 
         }else if (pars.length != binderEntity.getPars().length) {

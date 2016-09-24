@@ -6,7 +6,7 @@ import java.util.Map;
  * Http请求模块接口，实现有Get,Post,Pull等
  * Created by pc on 16/8/29.
  */
-public interface IHttpModel<T> {
+public interface IHttpDriver<T> {
     public void setUrl(String url);
     public void addPar(String key,String value);
     public void setPars(Map<String,String> pars);

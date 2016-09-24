@@ -1,7 +1,7 @@
 package net.gy.SwiftFrameWork.MVVM.Impl;
 
 import net.gy.SwiftFrameWork.MVVM.Entity.ParField;
-import net.gy.SwiftFrameWork.MVVM.Interface.IHttpModel;
+import net.gy.SwiftFrameWork.MVVM.Interface.IHttpDriver;
 
 import java.util.Map;
 
@@ -9,11 +9,11 @@ import java.util.Map;
  * Http请求基类
  * Created by pc on 16/8/30.
  */
-public abstract class BaseHttpModel implements IHttpModel{
+public abstract class BaseHttpDriver implements IHttpDriver {
 
     protected final static ThreadLocal<ParField> parLocal = new ThreadLocal<ParField>();
 
-    public BaseHttpModel() {
+    public BaseHttpDriver() {
     }
 
     @Override
