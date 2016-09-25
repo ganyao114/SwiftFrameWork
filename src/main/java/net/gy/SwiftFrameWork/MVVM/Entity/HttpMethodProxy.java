@@ -1,9 +1,14 @@
 package net.gy.SwiftFrameWork.MVVM.Entity;
 
+import android.app.Activity;
+import android.app.Application;
+import android.content.Context;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 
+import net.gy.SwiftFrameWork.IOC.UI.view.viewbinder.annotation.ListDataSrc;
 import net.gy.SwiftFrameWork.MVVM.Annotations.HttpSrcMethod;
 import net.gy.SwiftFrameWork.MVVM.Cache.MethodCache;
 import net.gy.SwiftFrameWork.MVVM.Cache.MvvmCache;
@@ -26,6 +31,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
+import java.util.concurrent.locks.Condition;
 
 /**
  * 代理实体，用户定义的业务层接口的真正实现类
@@ -46,9 +53,19 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
     private WeakReference<View> viewsingle;
     private ICallBack sigleCallback;
 
+    private List<Future> futures = new ArrayList<>();
+    private Activity context;
+
     public HttpMethodProxy(Map<Method,MethodCache> methodCaches,Map<String,ICallBack> callBacks) {
         this.methodCaches = methodCaches;
         this.callBacks = callBacks;
+        init();
+    }
+
+    public HttpMethodProxy(Map<Method,MethodCache> methodCaches,Map<String,ICallBack> callBacks,Activity context) {
+        this.methodCaches = methodCaches;
+        this.callBacks = callBacks;
+        this.context = context;
         init();
     }
 
@@ -100,7 +117,8 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
 
             httpTemplets.put(invoker,httpTemplet);
         }
-
+        if (context != null)
+            registContextDestoryCaller();
     }
 
     @Override
@@ -121,7 +139,7 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
             return;
         }else{
             //提交线程池处理
-            MyWorkThreadQueue.AddTask(httpTemplet);
+            futures.add(MyWorkThreadQueue.AddTask(httpTemplet));
         }
         return;
     }
@@ -147,9 +165,15 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
             return reses.get(invoker);
         }else{
             //提交线程池处理
-            MyWorkThreadQueue.AddTask(httpTemplet);
+            futures.add(MyWorkThreadQueue.AddTask(httpTemplet));
         }
         return null;
+    }
+
+    @Override
+    public void cancel(Context context) {
+        for (Future future:futures)
+            future.cancel(true);
     }
 
     @Override
@@ -226,6 +250,50 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
                     }
                 });
         }
+    }
+
+    private  void registContextDestoryCaller(){
+        context.getApplication().registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+                if (context == null)
+                    return;
+                if (activity == context || context.isDestroyed()) {
+                    cancel(activity);
+                    context.getApplication().unregisterActivityLifecycleCallbacks(this);
+                }
+            }
+        });
     }
 
     public void setViewContentRef(Map<String, WeakReference<View>> viewContentRef) {
