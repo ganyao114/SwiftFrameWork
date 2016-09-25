@@ -3,7 +3,7 @@ package net.gy.SwiftFrameWork.MVVM.Interface;
 import java.util.Map;
 
 /**
- * Http请求模块接口，实现有Get,Post,Pull等
+ * Http请求模块驱动接口，实现有Get,Post,Pull等
  * Created by pc on 16/8/29.
  */
 public interface IHttpDriver<T> {

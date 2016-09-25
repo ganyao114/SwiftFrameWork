@@ -7,6 +7,7 @@ import android.view.View;
 import net.gy.SwiftFrameWork.MVVM.Annotations.HttpSrcMethod;
 import net.gy.SwiftFrameWork.MVVM.Cache.MethodCache;
 import net.gy.SwiftFrameWork.MVVM.Cache.MvvmCache;
+import net.gy.SwiftFrameWork.MVVM.Impl.HttpDriverFactory;
 import net.gy.SwiftFrameWork.MVVM.Impl.HttpGetDriver;
 import net.gy.SwiftFrameWork.MVVM.Impl.HttpPostDriver;
 import net.gy.SwiftFrameWork.MVVM.Impl.HttpTemplet;
@@ -16,6 +17,7 @@ import net.gy.SwiftFrameWork.MVVM.Interface.ICallBackInner;
 import net.gy.SwiftFrameWork.MVVM.Interface.IFilter;
 import net.gy.SwiftFrameWork.MVVM.Interface.IHttpDriver;
 import net.gy.SwiftFrameWork.MVVM.Interface.IMethodProxy;
+import net.gy.SwiftFrameWork.MVVM.Interface.IModelToView;
 import net.gy.SwiftFrameWork.Service.thread.pool.impl.MyWorkThreadQueue;
 
 import java.lang.ref.WeakReference;
@@ -56,16 +58,19 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
             HttpBinderEntity binderEntity = binderEntityEntry.getValue().getBinderEntity();
             Method invoker = binderEntityEntry.getKey();
             HttpSrcMethod control = binderEntity.getControl();
-            IHttpDriver httpModel = null;
-            switch (control.connMode()) {
-                case Post:
-                    httpModel = new HttpPostDriver();
-                    break;
-                case Get:
-                    httpModel = new HttpGetDriver();
-                    break;
+            IHttpDriver httpDriver = null;
+            Class<? extends IHttpDriver> driver = control.driver();
+            httpDriver = HttpDriverFactory.getDriver(driver);
+            if (httpDriver == null) {
+                switch (control.connMode()) {
+                    case Post:
+                        httpDriver = new HttpPostDriver();
+                        break;
+                    case Get:
+                        httpDriver = new HttpGetDriver();
+                        break;
+                }
             }
-
             Class<? extends IFilter>[] filters = control.filters();
             List<IFilter> filtersImpls = null;
             if (filters.length > 0&&filters[0]!=IFilter.class){
@@ -77,7 +82,7 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
             }
 
 
-            HttpTemplet httpTemplet = new HttpTemplet(this, httpModel,invoker);
+            HttpTemplet httpTemplet = new HttpTemplet(this, httpDriver,invoker);
 
             String url = control.url();
             String urlBase = BaseUrlFactory.getUrl(control.baseUrlKey());
@@ -186,6 +191,11 @@ public final class HttpMethodProxy implements IMethodProxy,ICallBackInner {
         mainHandler.post(new Runnable() {
             @Override
             public void run() {
+                if (o instanceof IModelToView){
+                    IModelToView modelToView = (IModelToView) o;
+                    modelToView.ModelToView(content);
+                    return;
+                }
                 try {
                     ViewDisplayer.show(methodCaches.get(invoker).getRet().getViewBindControl().getRoot(),o,content);
                 } catch (Exception e) {

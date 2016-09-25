@@ -7,6 +7,12 @@ import net.gy.SwiftFrameWork.MVVM.Interface.IHttpDriver;
  */
 public class HttpDriverFactory {
     public static IHttpDriver getDriver(Class<? extends IHttpDriver> clazz){
-        return null;
+        IHttpDriver driver = null;
+        try {
+            driver = clazz.newInstance();
+        }catch (Exception e){
+            return null;
+        }
+        return driver;
     }
 }
