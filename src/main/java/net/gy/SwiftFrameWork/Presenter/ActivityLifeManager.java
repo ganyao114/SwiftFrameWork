@@ -29,6 +29,8 @@ public class ActivityLifeManager implements Application.ActivityLifecycleCallbac
                 iks = new Vector();
                 invokers.put(type,iks);
             }
+            if (iks.contains(object))
+                return;
             iks.add(object);
             dispathEntities(entities);
         }
@@ -57,7 +59,20 @@ public class ActivityLifeManager implements Application.ActivityLifecycleCallbac
 
     private void dispathEntities(Vector<LifeInvokerEntity> entities) {
         for (LifeInvokerEntity entity:entities){
-
+            Class<? extends Activity> tarAcType = entity.getTarType();
+            ActivityLifeType lifeType = entity.getType();
+            ActivityBinder binder = activityBinderMap.get(tarAcType);
+            if (binder == null){
+                binder = new ActivityBinder();
+                activityBinderMap.put(tarAcType,binder);
+            }
+            Vector<LifeInvokerEntity> lifeInvokerEntities = binder.getLifes()[lifeType.value()];
+            if (lifeInvokerEntities == null){
+                lifeInvokerEntities = new Vector<>();
+                binder.getLifes()[lifeType.value()] = lifeInvokerEntities;
+            }
+            if (!lifeInvokerEntities.contains(entity))
+                lifeInvokerEntities.add(entity);
         }
     }
 

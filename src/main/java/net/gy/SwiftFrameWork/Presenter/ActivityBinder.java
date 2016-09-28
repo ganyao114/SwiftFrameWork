@@ -3,6 +3,7 @@ package net.gy.SwiftFrameWork.Presenter;
 import android.app.Activity;
 
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Created by gy939 on 2016/9/28.
@@ -10,7 +11,7 @@ import java.util.List;
 public class ActivityBinder {
 
     private Class<? extends Activity> type;
-    private List<LifeInvokerEntity>[] lifes = new List[7];
+    private Vector<LifeInvokerEntity>[] lifes = new Vector[7];
 
     public Class<? extends Activity> getType() {
         return type;
@@ -20,11 +21,11 @@ public class ActivityBinder {
         this.type = type;
     }
 
-    public List<LifeInvokerEntity>[] getLifes() {
+    public Vector<LifeInvokerEntity>[] getLifes() {
         return lifes;
     }
 
-    public void setLifes(List<LifeInvokerEntity>[] lifes) {
+    public void setLifes(Vector<LifeInvokerEntity>[] lifes) {
         this.lifes = lifes;
     }
 }
