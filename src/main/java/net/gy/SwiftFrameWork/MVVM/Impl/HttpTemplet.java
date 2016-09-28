@@ -108,10 +108,11 @@ public class HttpTemplet extends HttpThreadTemplet implements IThreadCallback{
                 object = filter.filter(object);
             }
         }
+        String obj = String.valueOf(object);
         if (jsonTree != null)
             object = JsonParse.getValue(jsonTree,object.toString());
         if (object instanceof IHandler)
-            ((IHandler)object).handler();
+            ((IHandler)object).handler(obj);
         callBack.onSuccess(invoker,object);
     }
 

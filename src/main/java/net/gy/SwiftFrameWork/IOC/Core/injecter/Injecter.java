@@ -20,7 +20,7 @@ public class Injecter {
             Annotation injectController = entity.getAnnotations().get(InjectController.class);
             if (injectController != null){
                 InjectController canno = (InjectController) injectController;
-                IInjectHandler handler = HandlerFactory.getHandler(canno.handler());
+                IInjectFieldHandler handler = HandlerFactory.getHandler(canno.handler());
                 try {
                     handler.inject(entity.getField(),object,injectController);
                 } catch (Exception e) {

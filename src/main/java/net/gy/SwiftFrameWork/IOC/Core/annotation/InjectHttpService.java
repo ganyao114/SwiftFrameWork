@@ -1,6 +1,6 @@
 package net.gy.SwiftFrameWork.IOC.Core.annotation;
 
-import net.gy.SwiftFrameWork.IOC.Core.injecter.impl.HttpInjectHandler;
+import net.gy.SwiftFrameWork.IOC.Core.injecter.impl.HttpInjectFieldHandler;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@InjectController(handler = HttpInjectHandler.class)
+@InjectController(handler = HttpInjectFieldHandler.class)
 public @interface InjectHttpService {
     String[] value();
 }

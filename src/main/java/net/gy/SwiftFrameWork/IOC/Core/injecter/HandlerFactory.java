@@ -1,6 +1,5 @@
 package net.gy.SwiftFrameWork.IOC.Core.injecter;
 
-import net.gy.SwiftFrameWork.IOC.Service.thread.handler.IHandler;
 import net.gy.SwiftFrameWork.utils.SyncMapProxy;
 
 import java.util.HashMap;
@@ -11,11 +10,11 @@ import java.util.Map;
  */
 public class HandlerFactory {
 
-    private static Map<Class<? extends IInjectHandler>,IInjectHandler> map =
-            SyncMapProxy.SyncMap(new HashMap<Class<? extends IInjectHandler>, IInjectHandler>());
+    private static Map<Class<? extends IInjectFieldHandler>,IInjectFieldHandler> map =
+            SyncMapProxy.SyncMap(new HashMap<Class<? extends IInjectFieldHandler>, IInjectFieldHandler>());
 
-    public static IInjectHandler getHandler(Class<? extends IInjectHandler> type){
-        IInjectHandler handler = map.get(type);
+    public static IInjectFieldHandler getHandler(Class<? extends IInjectFieldHandler> type){
+        IInjectFieldHandler handler = map.get(type);
         if (handler == null){
             try {
                 handler = type.newInstance();

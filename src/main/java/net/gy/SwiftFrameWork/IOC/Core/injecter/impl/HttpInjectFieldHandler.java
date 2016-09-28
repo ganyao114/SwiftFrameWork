@@ -3,13 +3,9 @@ package net.gy.SwiftFrameWork.IOC.Core.injecter.impl;
 import android.app.Activity;
 import android.view.View;
 
-import net.gy.SwiftFrameWork.Exception.utils.ExceptionRecorder;
 import net.gy.SwiftFrameWork.IOC.Core.annotation.InjectController;
 import net.gy.SwiftFrameWork.IOC.Core.annotation.InjectHttpService;
-import net.gy.SwiftFrameWork.IOC.Core.cache.ReflectCacheControl;
-import net.gy.SwiftFrameWork.IOC.Core.cache.ReflectWithCache;
-import net.gy.SwiftFrameWork.IOC.Core.injecter.IInjectHandler;
-import net.gy.SwiftFrameWork.MVVM.Entity.HttpMethodProxy;
+import net.gy.SwiftFrameWork.IOC.Core.injecter.IInjectFieldHandler;
 import net.gy.SwiftFrameWork.MVVM.Impl.HttpProxyFactory;
 import net.gy.SwiftFrameWork.MVVM.Interface.ICallBack;
 
@@ -19,7 +15,7 @@ import java.lang.reflect.Field;
 /**
  * Created by gy939 on 2016/9/12.
  */
-public class HttpInjectHandler implements IInjectHandler{
+public class HttpInjectFieldHandler implements IInjectFieldHandler {
 
     @Override
     public void inject(Field field, Object object, Annotation annotation) throws Exception {
