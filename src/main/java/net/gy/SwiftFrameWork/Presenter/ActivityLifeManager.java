@@ -2,6 +2,7 @@ package net.gy.SwiftFrameWork.Presenter;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.os.Bundle;
 
 import java.lang.ref.WeakReference;
@@ -15,8 +16,26 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ActivityLifeManager implements Application.ActivityLifecycleCallbacks{
 
+    private static ActivityLifeManager manager;
+
+    private boolean isRegist = false;
+
     private Map<Class<? extends Activity>,ActivityBinder> activityBinderMap = new ConcurrentHashMap<>();
     private Map<Class,Vector> invokers = new ConcurrentHashMap<>();
+
+    public static ActivityLifeManager getInstance(){
+        if (manager == null){
+            synchronized (ActivityLifeManager.class){
+                if (manager == null) {
+                    manager = new ActivityLifeManager();
+                }
+            }
+        }
+        return manager;
+    }
+
+    private ActivityLifeManager() {
+    }
 
     public void addInvoker(Object object){
         Class type = object.getClass();
@@ -101,6 +120,43 @@ public class ActivityLifeManager implements Application.ActivityLifecycleCallbac
                 entity.invoke(invoker,pars);
             }
         }
+    }
+
+    public void regist(Application application){
+        synchronized (this){
+            if (isRegist)
+                return;
+            application.registerActivityLifecycleCallbacks(this);
+            isRegist = true;
+        }
+    }
+
+    public void unregist(Application application){
+        synchronized (this){
+            if (!isRegist)
+                return;
+            application.unregisterActivityLifecycleCallbacks(this);
+            isRegist = false;
+        }
+    }
+
+    public static void Inject(Object object){
+        getInstance().addInvoker(object);
+    }
+
+    public static void Remove(Object object){
+        getInstance().removeInvoker(object);
+    }
+
+    public void preLoad(final Class[] classes){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (Class clazz:classes){
+                    ActivityLifeCache.getEntity(clazz);
+                }
+            }
+        }).start();
     }
 
 

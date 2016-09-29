@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 /**
  * Created by gy939 on 2016/9/26.
  */
-@Target(ElementType.TYPE)
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @InjectMethod(ActivityLifeHandler.class)
 public @interface ActivityLife {
