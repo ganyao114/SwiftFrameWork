@@ -54,7 +54,17 @@ public class ActivityLifeManager implements Application.ActivityLifecycleCallbac
     }
 
     private void removeEntities(Vector<LifeInvokerEntity> entities) {
-
+        for (LifeInvokerEntity entity:entities){
+            Class<? extends Activity> tarAcType = entity.getTarType();
+            ActivityLifeType lifeType = entity.getType();
+            ActivityBinder binder = activityBinderMap.get(tarAcType);
+            if (binder == null)
+                continue;
+            Vector<LifeInvokerEntity> lifeInvokerEntities = binder.getLifes()[lifeType.value()];
+            if (lifeInvokerEntities == null)
+                continue;
+            lifeInvokerEntities.remove(entity);
+        }
     }
 
     private void dispathEntities(Vector<LifeInvokerEntity> entities) {
@@ -76,39 +86,58 @@ public class ActivityLifeManager implements Application.ActivityLifecycleCallbac
         }
     }
 
+    private void dispatchEvent(Class acType,ActivityLifeType type,Object... pars) {
+        ActivityBinder binder = activityBinderMap.get(acType);
+        if (binder == null)
+            return;
+        Vector<LifeInvokerEntity> list = binder.getLifes()[type.value()];
+        if (list == null)
+            return;
+        for (LifeInvokerEntity entity:list){
+            Vector iks = invokers.get(entity.getInvokerType());
+            if (iks == null||iks.size() == 0)
+                continue;
+            for (Object invoker:iks){
+                entity.invoke(invoker,pars);
+            }
+        }
+    }
+
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-
+        dispatchEvent(activity.getClass(),ActivityLifeType.OnCreate,activity,savedInstanceState);
     }
+
+
 
     @Override
     public void onActivityStarted(Activity activity) {
-
+        dispatchEvent(activity.getClass(),ActivityLifeType.OnStart,activity);
     }
 
     @Override
     public void onActivityResumed(Activity activity) {
-
+        dispatchEvent(activity.getClass(),ActivityLifeType.OnResume,activity);
     }
 
     @Override
     public void onActivityPaused(Activity activity) {
-
+        dispatchEvent(activity.getClass(),ActivityLifeType.OnPause,activity);
     }
 
     @Override
     public void onActivityStopped(Activity activity) {
-
+        dispatchEvent(activity.getClass(),ActivityLifeType.OnStop,activity);
     }
 
     @Override
     public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-
+        dispatchEvent(activity.getClass(),ActivityLifeType.OnSave,activity,outState);
     }
 
     @Override
     public void onActivityDestroyed(Activity activity) {
-
+        dispatchEvent(activity.getClass(),ActivityLifeType.OnDestory,activity);
     }
 }
