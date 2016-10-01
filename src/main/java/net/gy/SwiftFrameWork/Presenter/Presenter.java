@@ -52,12 +52,22 @@ public abstract class Presenter implements IPresenter{
         }
     }
 
+    @Override
+    public void onPresenterInit(IPresenter context) {
+        ActivityLifeManager.Inject(this);
+    }
+
+    @Override
+    public void onPresenterDestory(IPresenter context) {
+        ActivityLifeManager.Remove(this);
+    }
+
     public void notifyChildDestory(Presenter presenter){
         childs.remove(presenter.getClass());
     }
 
 
-    static class ExtCall{
+    public static class ExtCall{
 
         private Presenter presenter;
 
